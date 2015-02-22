@@ -16,6 +16,23 @@ type Status struct {
 	Uptime float64 `json:"uptime"`
 }
 
+type TravisNotification struct {
+	Payload TravisPayload `json:"payload"`
+}
+
+type TravisPayload struct {
+	Status     string           `json:"status_message"`
+	Commit     string           `json:"commit"`
+	Branch     string           `json:"branch"`
+	Message    string           `json:"message"`
+	Repository TravisRepository `json:"repository"`
+}
+
+type TravisRepository struct {
+	Name  string `json:"name"`
+	Owner string `json:"owner_name"`
+}
+
 var (
 	hosts []Host
 	TTL   = 30
