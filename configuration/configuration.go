@@ -10,7 +10,7 @@ import (
 type iagoConfiguration struct {
 	Hostname string
 	Protocol string
-	Port     string
+	Port     int
 	Path     string
 }
 
