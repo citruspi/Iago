@@ -7,20 +7,20 @@ import (
 )
 
 func Announce(c *gin.Context) {
-	var notification travis.Notification
+	var announcement travis.Announcement
 
-	c.Bind(&notification)
+	c.Bind(&announcement)
 
 	if authorization, ok := c.Request.Header["Authorization"]; ok {
-		notification.Authorization = authorization[0]
+		announcement.Authorization = authorization[0]
 	}
 
-	if !notification.Valid() {
+	if !announcement.Valid() {
 		c.JSON(400, "")
 		return
 	}
 
-	go host.Notify(notification)
+	go host.Notify(announcement)
 
 	c.JSON(200, "")
 }

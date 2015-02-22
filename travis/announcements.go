@@ -7,7 +7,7 @@ import (
 	conf "github.com/citruspi/Iago/configuration"
 )
 
-type Notification struct {
+type Announcement struct {
 	Payload       Payload `json:"payload"`
 	Authorization string
 }
@@ -35,16 +35,16 @@ func calculateAuthorization(owner string, repository string) string {
 	return hex.EncodeToString(hash.Sum(nil))
 }
 
-func (n Notification) Valid() bool {
-	if (n.Payload.Status != "Passed") && (n.Payload.Status != "Fixed") {
+func (a Announcement) Valid() bool {
+	if (a.Payload.Status != "Passed") && (a.Payload.Status != "Fixed") {
 		return false
 	}
 
 	if conf.Travis.Authenticate {
-		owner := n.Payload.Repository.Owner
-		repository := n.Payload.Repository.Name
+		owner := a.Payload.Repository.Owner
+		repository := a.Payload.Repository.Name
 
-		if n.Authorization != calculateAuthorization(owner, repository) {
+		if a.Authorization != calculateAuthorization(owner, repository) {
 			return false
 		}
 	}

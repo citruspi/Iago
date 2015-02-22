@@ -90,12 +90,12 @@ func Cleanup() {
 	}
 }
 
-func Notify(notification travis.Notification) {
+func Notify(announcement travis.Announcement) {
 	deploy := Notification{}
-	deploy.Repository = notification.Payload.Repository.Name
-	deploy.Owner = notification.Payload.Repository.Owner
-	deploy.Commit = notification.Payload.Commit
-	deploy.Branch = notification.Payload.Branch
+	deploy.Repository = announcement.Payload.Repository.Name
+	deploy.Owner = announcement.Payload.Repository.Owner
+	deploy.Commit = announcement.Payload.Commit
+	deploy.Branch = announcement.Payload.Branch
 
 	payload, _ := json.Marshal(deploy)
 	body := bytes.NewBuffer(payload)
