@@ -20,8 +20,8 @@ type Status struct {
 
 var (
 	hosts []host.Host
-	TTL   int64
 	boot  time.Time
+	conf  configuration.Configuration
 )
 
 func cleanup() {
@@ -33,7 +33,7 @@ func cleanup() {
 				hosts = diff
 			}
 		}
-		time.Sleep(time.Duration(TTL) * time.Second)
+		time.Sleep(time.Duration(conf.Host.TTL) * time.Second)
 	}
 }
 
@@ -78,7 +78,7 @@ func checkin(c *gin.Context) {
 			}
 		}
 
-		newHost = newHost.Process(TTL)
+		newHost = newHost.Process(conf.Host.TTL)
 
 		hosts = append(hosts, newHost)
 
@@ -103,9 +103,7 @@ func status(c *gin.Context) {
 func main() {
 	boot = time.Now()
 
-	config := configuration.Process()
-
-	TTL = config.IntegerFromSection("Hosts", "TTL", 30)
+	conf = configuration.Process()
 
 	go cleanup()
 
@@ -114,13 +112,9 @@ func main() {
 	router.POST("/checkin/", checkin)
 	router.POST("/announce/", announce)
 
-	statusEnabled := config.BooleanFromSection("Web", "Status", true)
-
-	if statusEnabled {
+	if conf.Web.Status {
 		router.GET("/status/", status)
 	}
 
-	address := config.StringFromSection("Web", "Address", "127.0.0.1:8080")
-
-	router.Run(address)
+	router.Run(conf.Web.Address)
 }
