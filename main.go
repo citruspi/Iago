@@ -21,7 +21,15 @@ func main() {
 		c.Bind(&host)
 
 		if host.Hostname != "" {
-			hosts = append(hosts, host)
+			exists := false
+			for _, h := range hosts {
+				if h.Hostname == host.Hostname {
+					exists = true
+				}
+			}
+			if !exists {
+				hosts = append(hosts, host)
+			}
 		}
 
 		c.String(200, "")
