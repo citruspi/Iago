@@ -160,7 +160,12 @@ func main() {
 
 	router.POST("/checkin/", checkin)
 	router.POST("/announce/", announce)
-	router.GET("/status/", status)
+
+	statusEnabled := config.BooleanFromSection("Web", "Status", true)
+
+	if statusEnabled {
+		router.GET("/status/", status)
+	}
 
 	address := config.StringFromSection("Web", "Address", "127.0.0.1:8080")
 
