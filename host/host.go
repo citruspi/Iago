@@ -29,12 +29,12 @@ type Notification struct {
 	Owner      string    `json:"owner"`
 	Commit     string    `json:"commit"`
 	Branch     string    `json:"branch"`
-	Signature  Signature `json:"signature"`
+	Signature  Signature `json:"signature,omitempty"`
 }
 
 type Signature struct {
-	S string `json:"s"`
-	R string `json:"r"`
+	S string `json:"s,omitempty"`
+	R string `json:"r,omitempty"`
 }
 
 var (
