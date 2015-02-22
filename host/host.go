@@ -18,7 +18,6 @@ type Host struct {
 
 var (
 	List []Host
-	conf configuration.HostConfiguration
 )
 
 func (h Host) URL() string {
@@ -59,10 +58,8 @@ func (h Host) CheckIn() {
 		h.Path = "/"
 	}
 
-	conf = configuration.Conf.Host
-
 	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(conf.TTL) * time.Second)
+	expiration = expiration.Add(time.Duration(configuration.Conf.Host.TTL) * time.Second)
 
 	h.Expiration = expiration
 
@@ -78,6 +75,6 @@ func Cleanup() {
 				List = diff
 			}
 		}
-		time.Sleep(time.Duration(conf.TTL) * time.Second)
+		time.Sleep(time.Duration(configuration.Conf.Host.TTL) * time.Second)
 	}
 }
