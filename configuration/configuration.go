@@ -28,7 +28,7 @@ var (
 )
 
 func Process() {
-	path := flag.String("config", "/etc/iago.ini", "Configuration file path")
+	path := flag.String("config", "/etc/iagod.ini", "Configuration file path")
 	flag.Parse()
 
 	config, err := mini.LoadConfiguration(*path)
