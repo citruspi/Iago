@@ -78,7 +78,7 @@ func checkin(c *gin.Context) {
 			}
 		}
 
-		newHost = newHost.Process(conf.Host.TTL)
+		newHost = newHost.Process()
 
 		hosts = append(hosts, newHost)
 

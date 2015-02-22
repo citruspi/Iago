@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strconv"
 	"time"
+
+	"github.com/citruspi/Iago/configuration"
 )
 
 type Host struct {
@@ -27,7 +29,11 @@ func (h Host) URL() string {
 	return string(buffer.Bytes())
 }
 
-func (h Host) Process(TTL int64) Host {
+var (
+	conf configuration.HostConfiguration
+)
+
+func (h Host) Process() Host {
 	if h.Protocol == "" {
 		h.Protocol = "http"
 	}
@@ -44,8 +50,10 @@ func (h Host) Process(TTL int64) Host {
 		h.Path = "/"
 	}
 
+	conf = configuration.Conf.Host
+
 	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(TTL) * time.Second)
+	expiration = expiration.Add(time.Duration(conf.TTL) * time.Second)
 
 	h.Expiration = expiration
 
