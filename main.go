@@ -43,5 +43,9 @@ func main() {
 		}
 	})
 
+	router.GET("/status/", func(c *gin.Context) {
+		c.JSON(200, hosts)
+	})
+
 	router.Run(":8080")
 }
