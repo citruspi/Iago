@@ -11,6 +11,10 @@ type Host struct {
 	Expiration time.Time `json:"expiration"`
 }
 
+type Status struct {
+	Hosts []Host `json:"hosts"`
+}
+
 var (
 	hosts []Host
 	TTL   = 30
@@ -72,7 +76,10 @@ func main() {
 	})
 
 	router.GET("/status/", func(c *gin.Context) {
-		c.JSON(200, hosts)
+		status := Status{}
+		status.Hosts = hosts
+
+		c.JSON(200, status)
 	})
 
 	router.Run(":8080")
