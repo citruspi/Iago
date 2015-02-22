@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/citruspi/Iago/travis"
 	"github.com/fogcreek/mini"
 	"github.com/gin-gonic/gin"
 )
@@ -23,23 +24,6 @@ type Host struct {
 type Status struct {
 	Hosts  []Host  `json:"hosts"`
 	Uptime float64 `json:"uptime"`
-}
-
-type TravisNotification struct {
-	Payload TravisPayload `json:"payload"`
-}
-
-type TravisPayload struct {
-	Status     string           `json:"status_message"`
-	Commit     string           `json:"commit"`
-	Branch     string           `json:"branch"`
-	Message    string           `json:"message"`
-	Repository TravisRepository `json:"repository"`
-}
-
-type TravisRepository struct {
-	Name  string `json:"name"`
-	Owner string `json:"owner_name"`
 }
 
 var (
@@ -139,7 +123,7 @@ func main() {
 	})
 
 	router.POST("/announce/", func(c *gin.Context) {
-		var notification TravisNotification
+		var notification travis.Notification
 
 		c.Bind(&notification)
 
