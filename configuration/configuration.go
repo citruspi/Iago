@@ -27,10 +27,16 @@ type webConfiguration struct {
 	Address string
 }
 
+type notificationConfiguration struct {
+	Signed    bool
+	PublicKey string
+}
+
 var (
-	Iago    iagoConfiguration
-	CheckIn checkinConfiguration
-	Web     webConfiguration
+	Iago         iagoConfiguration
+	CheckIn      checkinConfiguration
+	Web          webConfiguration
+	Notification notificationConfiguration
 )
 
 func Process() {
@@ -81,4 +87,7 @@ func Process() {
 	}
 
 	Web.Address = config.StringFromSection("Web", "Address", ":9090")
+
+	Notification.Signed = config.BooleanFromSection("Notification", "Signed", false)
+	Notification.PublicKey = config.StringFromSection("Notification", "PublicKey", "/etc/iagod/key.pub")
 }
