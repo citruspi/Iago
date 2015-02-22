@@ -7,9 +7,9 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/citruspi/Iago/configuration"
 	"github.com/citruspi/Iago/host"
 	"github.com/citruspi/Iago/travis"
-	"github.com/fogcreek/mini"
 	"github.com/gin-gonic/gin"
 )
 
@@ -103,11 +103,7 @@ func status(c *gin.Context) {
 func main() {
 	boot = time.Now()
 
-	config, err := mini.LoadConfiguration("iago.ini")
-
-	if err != nil {
-		log.Fatal(err)
-	}
+	config := configuration.Process()
 
 	TTL = config.IntegerFromSection("Hosts", "TTL", 30)
 
