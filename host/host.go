@@ -59,7 +59,7 @@ func (h Host) CheckIn() {
 	}
 
 	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(configuration.Conf.Host.TTL) * time.Second)
+	expiration = expiration.Add(time.Duration(configuration.Host.TTL) * time.Second)
 
 	h.Expiration = expiration
 
@@ -75,6 +75,6 @@ func Cleanup() {
 				List = diff
 			}
 		}
-		time.Sleep(time.Duration(configuration.Conf.Host.TTL) * time.Second)
+		time.Sleep(time.Duration(configuration.Host.TTL) * time.Second)
 	}
 }

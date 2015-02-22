@@ -7,13 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-var (
-	conf configuration.Configuration
-)
-
 func main() {
 	configuration.Process()
-	conf = configuration.Conf
 
 	go host.Cleanup()
 
@@ -22,9 +17,9 @@ func main() {
 	router.POST("/checkin/", handlers.CheckIn)
 	router.POST("/announce/", handlers.Announce)
 
-	if conf.Web.Status {
+	if configuration.Web.Status {
 		router.GET("/status/", handlers.Status)
 	}
 
-	router.Run(conf.Web.Address)
+	router.Run(configuration.Web.Address)
 }

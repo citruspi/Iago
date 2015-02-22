@@ -6,28 +6,24 @@ import (
 	"github.com/FogCreek/mini"
 )
 
-type Configuration struct {
-	Host   HostConfiguration
-	Web    WebConfiguration
-	Travis TravisConfiguration
-}
-
-type HostConfiguration struct {
+type hostConfiguration struct {
 	TTL int64
 }
 
-type WebConfiguration struct {
+type webConfiguration struct {
 	Address string
 	Status  bool
 }
 
-type TravisConfiguration struct {
+type travisConfiguration struct {
 	Authenticate bool
 	Token        string
 }
 
 var (
-	Conf Configuration
+	Host   hostConfiguration
+	Web    webConfiguration
+	Travis travisConfiguration
 )
 
 func Process() {
@@ -37,11 +33,11 @@ func Process() {
 		log.Fatal(err)
 	}
 
-	Conf.Host.TTL = config.IntegerFromSection("Host", "TTL", 30)
+	Host.TTL = config.IntegerFromSection("Host", "TTL", 30)
 
-	Conf.Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
-	Conf.Web.Status = config.BooleanFromSection("Web", "Status", true)
+	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
+	Web.Status = config.BooleanFromSection("Web", "Status", true)
 
-	Conf.Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
-	Conf.Travis.Token = config.StringFromSection("Travis", "Token", "")
+	Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
+	Travis.Token = config.StringFromSection("Travis", "Token", "")
 }

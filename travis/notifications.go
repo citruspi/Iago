@@ -30,7 +30,7 @@ func calculateAuthorization(owner string, repository string) string {
 	hash.Write([]byte(owner))
 	hash.Write([]byte("/"))
 	hash.Write([]byte(repository))
-	hash.Write([]byte(configuration.Conf.Travis.Token))
+	hash.Write([]byte(configuration.Travis.Token))
 
 	return hex.EncodeToString(hash.Sum(nil))
 }
@@ -40,7 +40,7 @@ func (n Notification) Valid() bool {
 		return false
 	}
 
-	if configuration.Conf.Travis.Authenticate {
+	if configuration.Travis.Authenticate {
 		owner := n.Payload.Repository.Owner
 		repository := n.Payload.Repository.Name
 
