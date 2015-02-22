@@ -23,7 +23,22 @@ func buildTTL() time.Time {
 	return expiration
 }
 
+func cleanup() {
+	for {
+		for i, h := range hosts {
+			if time.Now().UTC().After(h.TTL) {
+				diff := hosts
+				diff = append(diff[:i], diff[i+1:]...)
+				hosts = diff
+			}
+		}
+		time.Sleep(time.Duration(TTL) * time.Second)
+	}
+}
+
 func main() {
+	go cleanup()
+
 	router := gin.Default()
 
 	router.POST("/checkin/", func(c *gin.Context) {
