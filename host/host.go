@@ -101,7 +101,7 @@ func Cleanup() {
 }
 
 func (notification Notification) Sign() Notification {
-	privateKeyRaw, err := ioutil.ReadFile("key")
+	privateKeyRaw, err := ioutil.ReadFile(conf.Notification.PrivateKey)
 
 	if err != nil {
 		log.Fatal(err)
@@ -141,7 +141,9 @@ func Notify(announcement travis.Announcement) {
 	notification.Commit = announcement.Payload.Commit
 	notification.Branch = announcement.Payload.Branch
 
-	notification = notification.Sign()
+	if conf.Notification.Sign {
+		notification = notification.Sign()
+	}
 
 	content, _ := json.Marshal(notification)
 	body := bytes.NewBuffer(content)
