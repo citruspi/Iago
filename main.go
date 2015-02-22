@@ -16,9 +16,9 @@ var (
 	TTL   = 30
 )
 
-func buildTTL() time.Duration {
-	expiration = time.Now().UTC()
-	expiration.Add(time.Duration(TTL) * time.Second)
+func buildTTL() time.Time {
+	expiration := time.Now().UTC()
+	expiration = expiration.Add(time.Duration(TTL) * time.Second)
 
 	return expiration
 }
