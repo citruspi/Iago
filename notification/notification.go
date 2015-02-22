@@ -7,6 +7,7 @@ import (
 	"crypto/x509"
 	"io/ioutil"
 	"log"
+	"math/big"
 
 	"github.com/citruspi/Iago/travis"
 )
@@ -56,6 +57,42 @@ func (notification Notification) Sign(privateKeyPath string) Notification {
 	notification.Signature.S = s.String()
 
 	return notification
+}
+
+func (notification Notification) Verify(publicKeyPath string) bool {
+	publicKeyRaw, err := ioutil.ReadFile(publicKeyPath)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	publicKey, err := x509.ParsePKIXPublicKey(publicKeyRaw)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var r big.Int
+	r.SetString(notification.Signature.R, 10)
+
+	var s big.Int
+	s.SetString(notification.Signature.S, 10)
+
+	var message bytes.Buffer
+	message.WriteString(notification.Owner)
+	message.WriteString("/")
+	message.WriteString(notification.Repository)
+	message.WriteString("@")
+	message.WriteString(notification.Branch)
+	message.WriteString("#")
+	message.WriteString(notification.Commit)
+
+	switch publicKey := publicKey.(type) {
+	case *ecdsa.PublicKey:
+		return ecdsa.Verify(publicKey, message.Bytes(), &r, &s)
+	default:
+		return false
+	}
 }
 
 func Build(announcement travis.Announcement) Notification {
