@@ -14,13 +14,6 @@ type Host struct {
 	Path       string    `json:"path"`
 }
 
-func BuildExpiration(TTL int64) time.Time {
-	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(TTL) * time.Second)
-
-	return expiration
-}
-
 func (h Host) URL() string {
 	var buffer bytes.Buffer
 
@@ -51,7 +44,10 @@ func (h Host) Process(TTL int64) Host {
 		h.Path = "/"
 	}
 
-	h.Expiration = BuildExpiration(TTL)
+	expiration := time.Now().UTC()
+	expiration = expiration.Add(time.Duration(TTL) * time.Second)
+
+	h.Expiration = expiration
 
 	return h
 }
