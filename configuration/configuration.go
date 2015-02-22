@@ -23,9 +23,14 @@ type checkinConfiguration struct {
 	TTL      int64
 }
 
+type webConfiguration struct {
+	Address string
+}
+
 var (
 	Iago    iagoConfiguration
 	CheckIn checkinConfiguration
+	Web     webConfiguration
 )
 
 func Process() {
@@ -74,4 +79,6 @@ func Process() {
 			CheckIn.Port = 443
 		}
 	}
+
+	Web.Address = config.StringFromSection("Web", "Address", ":9090")
 }
