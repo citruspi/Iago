@@ -63,3 +63,16 @@ func (h Host) Process() Host {
 
 	return h
 }
+
+func Cleanup() {
+	for {
+		for i, h := range List {
+			if time.Now().UTC().After(h.Expiration) {
+				diff := List
+				diff = append(diff[:i], diff[i+1:]...)
+				List = diff
+			}
+		}
+		time.Sleep(time.Duration(conf.TTL) * time.Second)
+	}
+}
