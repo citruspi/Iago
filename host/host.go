@@ -2,10 +2,14 @@ package host
 
 import (
 	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 	"strconv"
 	"time"
 
 	conf "github.com/citruspi/Iago/configuration"
+	"github.com/citruspi/Iago/travis"
 )
 
 type Host struct {
@@ -83,5 +87,32 @@ func Cleanup() {
 			}
 		}
 		time.Sleep(time.Duration(conf.Host.TTL) * time.Second)
+	}
+}
+
+func Notify(notification travis.Notification) {
+	deploy := Notification{}
+	deploy.Repository = notification.Payload.Repository.Name
+	deploy.Owner = notification.Payload.Repository.Owner
+	deploy.Commit = notification.Payload.Commit
+	deploy.Branch = notification.Payload.Branch
+
+	payload, _ := json.Marshal(deploy)
+	body := bytes.NewBuffer(payload)
+
+	for _, host := range List {
+		urlStr := host.URL()
+
+		req, err := http.NewRequest("POST", urlStr, body)
+		req.Header.Set("Content-Type", "application/json")
+
+		client := &http.Client{}
+		resp, err := client.Do(req)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		defer resp.Body.Close()
 	}
 }
