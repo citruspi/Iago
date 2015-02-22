@@ -18,6 +18,7 @@ type Host struct {
 
 var (
 	List []Host
+	conf configuration.HostConfiguration
 )
 
 func (h Host) URL() string {
@@ -32,10 +33,6 @@ func (h Host) URL() string {
 
 	return string(buffer.Bytes())
 }
-
-var (
-	conf configuration.HostConfiguration
-)
 
 func (h Host) CheckIn() {
 	for i, e := range List {
