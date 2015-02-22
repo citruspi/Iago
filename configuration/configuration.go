@@ -3,6 +3,7 @@ package configuration
 import (
 	"flag"
 	"log"
+	"os"
 
 	"github.com/FogCreek/mini"
 )
@@ -10,12 +11,21 @@ import (
 type iagoConfiguration struct {
 	Hostname string
 	Protocol string
-	Port     int
+	Port     int64
 	Path     string
 }
 
+type checkinConfiguration struct {
+	Hostname string
+	Protocol string
+	Port     int64
+	Path     string
+	TTL      int64
+}
+
 var (
-	Iago iagoConfiguration
+	Iago    iagoConfiguration
+	CheckIn checkinConfiguration
 )
 
 func Process() {
@@ -38,6 +48,30 @@ func Process() {
 			Iago.Port = 80
 		} else if Iago.Protocol == "https" {
 			Iago.Port = 443
+		}
+	}
+
+	CheckIn.Hostname = config.StringFromSection("CheckIn", "Hostname", "")
+	CheckIn.Protocol = config.StringFromSection("CheckIn", "Protocol", "http")
+	CheckIn.Path = config.StringFromSection("CheckIn", "Path", "/")
+	CheckIn.Port = config.IntegerFromSection("CheckIn", "Port", 0)
+	CheckIn.TTL = config.IntegerFromSection("CheckIn", "TTL", 30)
+
+	if CheckIn.Hostname == "" {
+		hostname, err := os.Hostname()
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		CheckIn.Hostname = hostname
+	}
+
+	if CheckIn.Port == 0 {
+		if CheckIn.Protocol == "http" {
+			CheckIn.Port = 80
+		} else if CheckIn.Protocol == "https" {
+			CheckIn.Port = 443
 		}
 	}
 }
