@@ -22,17 +22,25 @@ func main() {
 
 		if host.Hostname != "" {
 			exists := false
+
 			for _, h := range hosts {
 				if h.Hostname == host.Hostname {
 					exists = true
 				}
 			}
+
 			if !exists {
 				hosts = append(hosts, host)
 			}
-		}
 
-		c.String(200, "")
+			c.JSON(200, "")
+		} else {
+			var response struct {
+				Message string `json:"message"`
+			}
+			response.Message = "Invalid hostname."
+			c.JSON(400, response)
+		}
 	})
 
 	router.Run(":8080")
