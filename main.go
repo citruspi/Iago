@@ -173,5 +173,7 @@ func main() {
 		c.JSON(200, status)
 	})
 
-	router.Run(":8080")
+	address := config.StringFromSection("Web", "Address", "127.0.0.1:8080")
+
+	router.Run(address)
 }
