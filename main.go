@@ -1,6 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
+	"log"
+	"net/http"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -93,6 +97,31 @@ func main() {
 			response.Message = "Invalid hostname."
 			c.JSON(400, response)
 		}
+	})
+
+	router.POST("/announce/", func(c *gin.Context) {
+		var notification TravisNotification
+
+		c.Bind(&notification)
+
+		payload, _ := json.Marshal(notification.Payload)
+		body := bytes.NewBuffer(payload)
+
+		for _, host := range hosts {
+			req, err := http.NewRequest("POST", host.Hostname, body)
+			req.Header.Set("Content-Type", "application/json")
+
+			client := &http.Client{}
+			resp, err := client.Do(req)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			defer resp.Body.Close()
+		}
+
+		c.JSON(200, "")
 	})
 
 	router.GET("/status/", func(c *gin.Context) {
