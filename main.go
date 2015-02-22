@@ -89,7 +89,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	TTL = config.Integer("TTL", 30)
+	TTL = config.IntegerFromSection("Hosts", "TTL", 30)
 
 	go cleanup()
 
