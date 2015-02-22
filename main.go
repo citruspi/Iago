@@ -26,11 +26,11 @@ var (
 
 func cleanup() {
 	for {
-		for i, h := range hosts {
+		for i, h := range host.List {
 			if time.Now().UTC().After(h.Expiration) {
-				diff := hosts
+				diff := host.List
 				diff = append(diff[:i], diff[i+1:]...)
-				hosts = diff
+				host.List = diff
 			}
 		}
 		time.Sleep(time.Duration(conf.Host.TTL) * time.Second)
@@ -70,17 +70,17 @@ func checkin(c *gin.Context) {
 	c.Bind(&newHost)
 
 	if newHost.Hostname != "" {
-		for i, h := range hosts {
+		for i, h := range host.List {
 			if h.Hostname == newHost.Hostname {
-				diff := hosts
+				diff := host.List
 				diff = append(diff[:i], diff[i+1:]...)
-				hosts = diff
+				host.List = diff
 			}
 		}
 
 		newHost = newHost.Process()
 
-		hosts = append(hosts, newHost)
+		host.List = append(host.List, newHost)
 
 		c.JSON(200, "")
 	} else {
@@ -94,7 +94,7 @@ func checkin(c *gin.Context) {
 
 func status(c *gin.Context) {
 	status := Status{}
-	status.Hosts = hosts
+	status.Hosts = host.List
 	status.Uptime = time.Now().Sub(boot).Seconds()
 
 	c.JSON(200, status)
@@ -105,8 +105,6 @@ func main() {
 
 	configuration.Process()
 	conf = configuration.Conf
-
-	hosts = host.List
 
 	go cleanup()
 
