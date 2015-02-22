@@ -33,3 +33,25 @@ func (h Host) URL() string {
 
 	return string(buffer.Bytes())
 }
+
+func (h Host) Process(TTL int64) Host {
+	if h.Protocol == "" {
+		h.Protocol = "http"
+	}
+
+	if h.Port == 0 {
+		if h.Protocol == "http" {
+			h.Port = 80
+		} else if h.Protocol == "https" {
+			h.Port = 443
+		}
+	}
+
+	if h.Path == "" {
+		h.Path = "/"
+	}
+
+	h.Expiration = BuildExpiration(TTL)
+
+	return h
+}

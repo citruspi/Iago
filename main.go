@@ -78,23 +78,8 @@ func checkin(c *gin.Context) {
 			}
 		}
 
-		if newHost.Protocol == "" {
-			newHost.Protocol = "http"
-		}
+		newHost = newHost.Process(TTL)
 
-		if newHost.Port == 0 {
-			if newHost.Protocol == "http" {
-				newHost.Port = 80
-			} else if newHost.Protocol == "https" {
-				newHost.Port = 443
-			}
-		}
-
-		if newHost.Path == "" {
-			newHost.Path = "/"
-		}
-
-		newHost.Expiration = host.BuildExpiration(TTL)
 		hosts = append(hosts, newHost)
 
 		c.JSON(200, "")
