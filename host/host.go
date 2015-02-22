@@ -91,14 +91,14 @@ func Cleanup() {
 }
 
 func Notify(announcement travis.Announcement) {
-	deploy := Notification{}
-	deploy.Repository = announcement.Payload.Repository.Name
-	deploy.Owner = announcement.Payload.Repository.Owner
-	deploy.Commit = announcement.Payload.Commit
-	deploy.Branch = announcement.Payload.Branch
+	notification := Notification{}
+	notification.Repository = announcement.Payload.Repository.Name
+	notification.Owner = announcement.Payload.Repository.Owner
+	notification.Commit = announcement.Payload.Commit
+	notification.Branch = announcement.Payload.Branch
 
-	payload, _ := json.Marshal(deploy)
-	body := bytes.NewBuffer(payload)
+	content, _ := json.Marshal(notification)
+	body := bytes.NewBuffer(content)
 
 	for _, host := range List {
 		urlStr := host.URL()
