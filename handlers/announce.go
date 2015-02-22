@@ -20,7 +20,7 @@ func Announce(c *gin.Context) {
 		return
 	}
 
-	host.Notify(notification)
+	go host.Notify(notification)
 
 	c.JSON(200, "")
 }
