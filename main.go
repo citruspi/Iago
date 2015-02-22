@@ -103,7 +103,8 @@ func status(c *gin.Context) {
 func main() {
 	boot = time.Now()
 
-	conf = configuration.Process()
+	configuration.Process()
+	conf = configuration.Conf
 
 	go cleanup()
 

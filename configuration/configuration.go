@@ -20,19 +20,19 @@ type WebConfiguration struct {
 	Status  bool
 }
 
-func Process() Configuration {
+var (
+	Conf Configuration
+)
+
+func Process() {
 	config, err := mini.LoadConfiguration("iago.ini")
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	conf := Configuration{}
+	Conf.Host.TTL = config.IntegerFromSection("Host", "TTL", 30)
 
-	conf.Host.TTL = config.IntegerFromSection("Host", "TTL", 30)
-
-	conf.Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
-	conf.Web.Status = config.BooleanFromSection("Web", "Status", true)
-
-	return conf
+	Conf.Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
+	Conf.Web.Status = config.BooleanFromSection("Web", "Status", true)
 }
