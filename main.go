@@ -8,6 +8,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fogcreek/mini"
 	"github.com/gin-gonic/gin"
 )
 
@@ -43,7 +44,7 @@ type TravisRepository struct {
 
 var (
 	hosts []Host
-	TTL   = 30
+	TTL   int64
 )
 
 func buildExpiration() time.Time {
@@ -81,6 +82,14 @@ func cleanup() {
 
 func main() {
 	boot := time.Now()
+
+	config, err := mini.LoadConfiguration("iago.ini")
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	TTL = config.Integer("TTL", 30)
 
 	go cleanup()
 
