@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/citruspi/Iago/configuration"
+	conf "github.com/citruspi/Iago/configuration"
 )
 
 type Host struct {
@@ -59,7 +59,7 @@ func (h Host) CheckIn() {
 	}
 
 	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(configuration.Host.TTL) * time.Second)
+	expiration = expiration.Add(time.Duration(conf.Host.TTL) * time.Second)
 
 	h.Expiration = expiration
 
@@ -75,6 +75,6 @@ func Cleanup() {
 				List = diff
 			}
 		}
-		time.Sleep(time.Duration(configuration.Host.TTL) * time.Second)
+		time.Sleep(time.Duration(conf.Host.TTL) * time.Second)
 	}
 }

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"github.com/citruspi/Iago/configuration"
+	conf "github.com/citruspi/Iago/configuration"
 	"github.com/citruspi/Iago/handlers"
 	"github.com/citruspi/Iago/host"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	configuration.Process()
+	conf.Process()
 
 	go host.Cleanup()
 
@@ -17,9 +17,9 @@ func main() {
 	router.POST("/checkin/", handlers.CheckIn)
 	router.POST("/announce/", handlers.Announce)
 
-	if configuration.Web.Status {
+	if conf.Web.Status {
 		router.GET("/status/", handlers.Status)
 	}
 
-	router.Run(configuration.Web.Address)
+	router.Run(conf.Web.Address)
 }

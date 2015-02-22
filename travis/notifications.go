@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	"github.com/citruspi/Iago/configuration"
+	conf "github.com/citruspi/Iago/configuration"
 )
 
 type Notification struct {
@@ -30,7 +30,7 @@ func calculateAuthorization(owner string, repository string) string {
 	hash.Write([]byte(owner))
 	hash.Write([]byte("/"))
 	hash.Write([]byte(repository))
-	hash.Write([]byte(configuration.Travis.Token))
+	hash.Write([]byte(conf.Travis.Token))
 
 	return hex.EncodeToString(hash.Sum(nil))
 }
@@ -40,7 +40,7 @@ func (n Notification) Valid() bool {
 		return false
 	}
 
-	if configuration.Travis.Authenticate {
+	if conf.Travis.Authenticate {
 		owner := n.Payload.Repository.Owner
 		repository := n.Payload.Repository.Name
 
