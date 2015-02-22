@@ -16,6 +16,13 @@ type Host struct {
 	Path       string    `json:"path"`
 }
 
+type Notification struct {
+	Repository string `json:"repository"`
+	Owner      string `json:"owner"`
+	Commit     string `json:"commit"`
+	Branch     string `json:"branch"`
+}
+
 var (
 	List []Host
 )

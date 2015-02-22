@@ -25,7 +25,13 @@ func Announce(c *gin.Context) {
 		return
 	}
 
-	payload, _ := json.Marshal(notification.Payload)
+	deploy := host.Notification{}
+	deploy.Repository = notification.Payload.Repository.Name
+	deploy.Owner = notification.Payload.Repository.Owner
+	deploy.Commit = notification.Payload.Commit
+	deploy.Branch = notification.Payload.Branch
+
+	payload, _ := json.Marshal(deploy)
 	body := bytes.NewBuffer(payload)
 
 	for _, host := range host.List {
