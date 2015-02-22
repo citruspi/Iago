@@ -25,13 +25,6 @@ var (
 	boot  time.Time
 )
 
-func buildExpiration() time.Time {
-	expiration := time.Now().UTC()
-	expiration = expiration.Add(time.Duration(TTL) * time.Second)
-
-	return expiration
-}
-
 func buildURL(h host.Host) string {
 	var buffer bytes.Buffer
 
@@ -115,7 +108,7 @@ func checkin(c *gin.Context) {
 			newHost.Path = "/"
 		}
 
-		newHost.Expiration = buildExpiration()
+		newHost.Expiration = host.BuildExpiration(TTL)
 		hosts = append(hosts, newHost)
 
 		c.JSON(200, "")

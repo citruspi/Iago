@@ -11,3 +11,10 @@ type Host struct {
 	Port       int       `json:"port"`
 	Path       string    `json:"path"`
 }
+
+func BuildExpiration(TTL int64) time.Time {
+	expiration := time.Now().UTC()
+	expiration = expiration.Add(time.Duration(TTL) * time.Second)
+
+	return expiration
+}
