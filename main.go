@@ -8,26 +8,19 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/citruspi/Iago/host"
 	"github.com/citruspi/Iago/travis"
 	"github.com/fogcreek/mini"
 	"github.com/gin-gonic/gin"
 )
 
-type Host struct {
-	Hostname   string    `json:"hostname"`
-	Expiration time.Time `json:"expiration"`
-	Protocol   string    `json:"protocol"`
-	Port       int       `json:"port"`
-	Path       string    `json:"path"`
-}
-
 type Status struct {
-	Hosts  []Host  `json:"hosts"`
-	Uptime float64 `json:"uptime"`
+	Hosts  []host.Host `json:"hosts"`
+	Uptime float64     `json:"uptime"`
 }
 
 var (
-	hosts []Host
+	hosts []host.Host
 	TTL   int64
 	boot  time.Time
 )
@@ -39,15 +32,15 @@ func buildExpiration() time.Time {
 	return expiration
 }
 
-func buildURL(host Host) string {
+func buildURL(h host.Host) string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(host.Protocol)
+	buffer.WriteString(h.Protocol)
 	buffer.WriteString("://")
-	buffer.WriteString(host.Hostname)
+	buffer.WriteString(h.Hostname)
 	buffer.WriteString(":")
-	buffer.WriteString(strconv.Itoa(host.Port))
-	buffer.WriteString(host.Path)
+	buffer.WriteString(strconv.Itoa(h.Port))
+	buffer.WriteString(h.Path)
 
 	return string(buffer.Bytes())
 }
@@ -93,37 +86,37 @@ func announce(c *gin.Context) {
 }
 
 func checkin(c *gin.Context) {
-	var host Host
+	var newHost host.Host
 
-	c.Bind(&host)
+	c.Bind(&newHost)
 
-	if host.Hostname != "" {
+	if newHost.Hostname != "" {
 		for i, h := range hosts {
-			if h.Hostname == host.Hostname {
+			if h.Hostname == newHost.Hostname {
 				diff := hosts
 				diff = append(diff[:i], diff[i+1:]...)
 				hosts = diff
 			}
 		}
 
-		if host.Protocol == "" {
-			host.Protocol = "http"
+		if newHost.Protocol == "" {
+			newHost.Protocol = "http"
 		}
 
-		if host.Port == 0 {
-			if host.Protocol == "http" {
-				host.Port = 80
-			} else if host.Protocol == "https" {
-				host.Port = 443
+		if newHost.Port == 0 {
+			if newHost.Protocol == "http" {
+				newHost.Port = 80
+			} else if newHost.Protocol == "https" {
+				newHost.Port = 443
 			}
 		}
 
-		if host.Path == "" {
-			host.Path = "/"
+		if newHost.Path == "" {
+			newHost.Path = "/"
 		}
 
-		host.Expiration = buildExpiration()
-		hosts = append(hosts, host)
+		newHost.Expiration = buildExpiration()
+		hosts = append(hosts, newHost)
 
 		c.JSON(200, "")
 	} else {
