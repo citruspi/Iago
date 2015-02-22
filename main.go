@@ -86,6 +86,22 @@ func main() {
 				}
 			}
 
+			if host.Protocol == "" {
+				host.Protocol = "http"
+			}
+
+			if host.Port == 0 {
+				if host.Protocol == "http" {
+					host.Port = 80
+				} else if host.Protocol == "https" {
+					host.Port = 443
+				}
+			}
+
+			if host.Path == "" {
+				host.Path = "/"
+			}
+
 			host.Expiration = buildExpiration()
 			hosts = append(hosts, host)
 
