@@ -28,7 +28,7 @@ func Process() {
 		log.Fatal(err)
 	}
 
-	Iago.Hostname = config.StringFromSection("Iago", "Hostname", "")
+	Iago.Hostname = config.StringFromSection("Iago", "Hostname", "localhost")
 	Iago.Protocol = config.StringFromSection("Iago", "Protocol", "http")
 	Iago.Path = config.StringFromSection("Iago", "Path", "/")
 	Iago.Port = config.IntegerFromSection("Iago", "Port", 0)
