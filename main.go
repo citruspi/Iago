@@ -7,8 +7,8 @@ import (
 )
 
 type Host struct {
-	Hostname string    `json:"hostname"`
-	TTL      time.Time `json:"ttl"`
+	Hostname   string    `json:"hostname"`
+	Expiration time.Time `json:"expiration"`
 }
 
 var (
@@ -16,7 +16,7 @@ var (
 	TTL   = 30
 )
 
-func buildTTL() time.Time {
+func buildExpiration() time.Time {
 	expiration := time.Now().UTC()
 	expiration = expiration.Add(time.Duration(TTL) * time.Second)
 
@@ -26,7 +26,7 @@ func buildTTL() time.Time {
 func cleanup() {
 	for {
 		for i, h := range hosts {
-			if time.Now().UTC().After(h.TTL) {
+			if time.Now().UTC().After(h.Expiration) {
 				diff := hosts
 				diff = append(diff[:i], diff[i+1:]...)
 				hosts = diff
@@ -52,12 +52,12 @@ func main() {
 			for i, h := range hosts {
 				if h.Hostname == host.Hostname {
 					exists = true
-					hosts[i].TTL = buildTTL()
+					hosts[i].Expiration = buildExpiration()
 				}
 			}
 
 			if !exists {
-				host.TTL = buildTTL()
+				host.Expiration = buildExpiration()
 				hosts = append(hosts, host)
 			}
 
