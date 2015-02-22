@@ -37,7 +37,15 @@ var (
 	conf configuration.HostConfiguration
 )
 
-func (h Host) Process() Host {
+func (h Host) CheckIn() {
+	for i, e := range List {
+		if e.Hostname == h.Hostname {
+			diff := List
+			diff = append(diff[:i], diff[i+1:]...)
+			List = diff
+		}
+	}
+
 	if h.Protocol == "" {
 		h.Protocol = "http"
 	}
@@ -61,7 +69,7 @@ func (h Host) Process() Host {
 
 	h.Expiration = expiration
 
-	return h
+	List = append(List, h)
 }
 
 func Cleanup() {
