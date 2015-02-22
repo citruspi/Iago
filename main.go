@@ -12,7 +12,8 @@ type Host struct {
 }
 
 type Status struct {
-	Hosts []Host `json:"hosts"`
+	Hosts  []Host  `json:"hosts"`
+	Uptime float64 `json:"uptime"`
 }
 
 var (
@@ -41,6 +42,8 @@ func cleanup() {
 }
 
 func main() {
+	boot := time.Now()
+
 	go cleanup()
 
 	router := gin.Default()
@@ -78,6 +81,7 @@ func main() {
 	router.GET("/status/", func(c *gin.Context) {
 		status := Status{}
 		status.Hosts = hosts
+		status.Uptime = time.Now().Sub(boot).Seconds()
 
 		c.JSON(200, status)
 	})
