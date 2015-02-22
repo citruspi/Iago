@@ -16,6 +16,10 @@ type Host struct {
 	Path       string    `json:"path"`
 }
 
+var (
+	List []Host
+)
+
 func (h Host) URL() string {
 	var buffer bytes.Buffer
 

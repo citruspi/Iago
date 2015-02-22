@@ -106,6 +106,8 @@ func main() {
 	configuration.Process()
 	conf = configuration.Conf
 
+	hosts = host.List
+
 	go cleanup()
 
 	router := gin.Default()
