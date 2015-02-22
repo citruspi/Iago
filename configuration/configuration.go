@@ -1,6 +1,7 @@
 package configuration
 
 import (
+	"flag"
 	"log"
 
 	"github.com/FogCreek/mini"
@@ -27,7 +28,10 @@ var (
 )
 
 func Process() {
-	config, err := mini.LoadConfiguration("iago.ini")
+	path := flag.String("config", "/etc/iago.ini", "Configuration file path")
+	flag.Parse()
+
+	config, err := mini.LoadConfiguration(*path)
 
 	if err != nil {
 		log.Fatal(err)
