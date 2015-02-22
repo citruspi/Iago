@@ -1,6 +1,8 @@
 package host
 
 import (
+	"bytes"
+	"strconv"
 	"time"
 )
 
@@ -17,4 +19,17 @@ func BuildExpiration(TTL int64) time.Time {
 	expiration = expiration.Add(time.Duration(TTL) * time.Second)
 
 	return expiration
+}
+
+func (h Host) URL() string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(h.Protocol)
+	buffer.WriteString("://")
+	buffer.WriteString(h.Hostname)
+	buffer.WriteString(":")
+	buffer.WriteString(strconv.Itoa(h.Port))
+	buffer.WriteString(h.Path)
+
+	return string(buffer.Bytes())
 }

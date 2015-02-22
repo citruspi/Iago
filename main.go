@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
-	"strconv"
 	"time"
 
 	"github.com/citruspi/Iago/host"
@@ -24,19 +23,6 @@ var (
 	TTL   int64
 	boot  time.Time
 )
-
-func buildURL(h host.Host) string {
-	var buffer bytes.Buffer
-
-	buffer.WriteString(h.Protocol)
-	buffer.WriteString("://")
-	buffer.WriteString(h.Hostname)
-	buffer.WriteString(":")
-	buffer.WriteString(strconv.Itoa(h.Port))
-	buffer.WriteString(h.Path)
-
-	return string(buffer.Bytes())
-}
 
 func cleanup() {
 	for {
@@ -60,7 +46,7 @@ func announce(c *gin.Context) {
 	body := bytes.NewBuffer(payload)
 
 	for _, host := range hosts {
-		urlStr := buildURL(host)
+		urlStr := host.URL()
 
 		req, err := http.NewRequest("POST", urlStr, body)
 		req.Header.Set("Content-Type", "application/json")
