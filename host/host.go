@@ -2,17 +2,14 @@ package host
 
 import (
 	"bytes"
-	"crypto/ecdsa"
-	"crypto/rand"
-	"crypto/x509"
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
 
 	conf "github.com/citruspi/Iago/configuration"
+	"github.com/citruspi/Iago/notification"
 	"github.com/citruspi/Iago/travis"
 )
 
@@ -22,19 +19,6 @@ type Host struct {
 	Protocol   string    `json:"protocol"`
 	Port       int       `json:"port"`
 	Path       string    `json:"path"`
-}
-
-type Notification struct {
-	Repository string    `json:"repository"`
-	Owner      string    `json:"owner"`
-	Commit     string    `json:"commit"`
-	Branch     string    `json:"branch"`
-	Signature  Signature `json:"signature,omitempty"`
-}
-
-type Signature struct {
-	S string `json:"s,omitempty"`
-	R string `json:"r,omitempty"`
 }
 
 var (
@@ -100,52 +84,14 @@ func Cleanup() {
 	}
 }
 
-func (notification Notification) Sign() Notification {
-	privateKeyRaw, err := ioutil.ReadFile(conf.Notification.PrivateKey)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	privateKey, err := x509.ParseECPrivateKey(privateKeyRaw)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	var message bytes.Buffer
-	message.WriteString(notification.Owner)
-	message.WriteString("/")
-	message.WriteString(notification.Repository)
-	message.WriteString("@")
-	message.WriteString(notification.Branch)
-	message.WriteString("#")
-	message.WriteString(notification.Commit)
-
-	r, s, err := ecdsa.Sign(rand.Reader, privateKey, message.Bytes())
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	notification.Signature.R = r.String()
-	notification.Signature.S = s.String()
-
-	return notification
-}
-
 func Notify(announcement travis.Announcement) {
-	notification := Notification{}
-	notification.Repository = announcement.Payload.Repository.Name
-	notification.Owner = announcement.Payload.Repository.Owner
-	notification.Commit = announcement.Payload.Commit
-	notification.Branch = announcement.Payload.Branch
+	n := notification.Build(announcement)
 
 	if conf.Notification.Sign {
-		notification = notification.Sign()
+		n = n.Sign(conf.Notification.PrivateKey)
 	}
 
-	content, _ := json.Marshal(notification)
+	content, _ := json.Marshal(n)
 	body := bytes.NewBuffer(content)
 
 	for _, host := range List {
