@@ -16,3 +16,11 @@ type Repository struct {
 	Name  string `json:"name"`
 	Owner string `json:"owner_name"`
 }
+
+func (n Notification) Valid() bool {
+	if (n.Payload.Status != "Passed") && (n.Payload.Status != "Fixed") {
+		return false
+	}
+
+	return true
+}

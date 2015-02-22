@@ -16,6 +16,11 @@ func Announce(c *gin.Context) {
 
 	c.Bind(&notification)
 
+	if !notification.Valid() {
+		c.JSON(400, "")
+		return
+	}
+
 	payload, _ := json.Marshal(notification.Payload)
 	body := bytes.NewBuffer(payload)
 
