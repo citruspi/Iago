@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"crypto/x509"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -124,10 +123,6 @@ func (notification Notification) Sign() Notification {
 	message.WriteString(notification.Commit)
 
 	r, s, err := ecdsa.Sign(rand.Reader, privateKey, message.Bytes())
-
-	fmt.Println(r)
-	fmt.Println(s)
-	fmt.Println(string(message.Bytes()))
 
 	if err != nil {
 		log.Fatal(err)
