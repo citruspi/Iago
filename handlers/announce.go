@@ -16,6 +16,10 @@ func Announce(c *gin.Context) {
 
 	c.Bind(&notification)
 
+	if authorization, ok := c.Request.Header["Authorization"]; ok {
+		notification.Authorization = authorization[0]
+	}
+
 	if !notification.Valid() {
 		c.JSON(400, "")
 		return

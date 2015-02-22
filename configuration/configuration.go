@@ -7,8 +7,9 @@ import (
 )
 
 type Configuration struct {
-	Host HostConfiguration
-	Web  WebConfiguration
+	Host   HostConfiguration
+	Web    WebConfiguration
+	Travis TravisConfiguration
 }
 
 type HostConfiguration struct {
@@ -18,6 +19,11 @@ type HostConfiguration struct {
 type WebConfiguration struct {
 	Address string
 	Status  bool
+}
+
+type TravisConfiguration struct {
+	Authenticate bool
+	Token        string
 }
 
 var (
@@ -35,4 +41,7 @@ func Process() {
 
 	Conf.Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
 	Conf.Web.Status = config.BooleanFromSection("Web", "Status", true)
+
+	Conf.Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
+	Conf.Travis.Token = config.StringFromSection("Travis", "Token", "")
 }
