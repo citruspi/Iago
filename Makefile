@@ -26,7 +26,7 @@ iago:
 	go build iago/main.go
 	mv main ./bin/iago
 
-release: iagod iago
+release: clean iagod iago
 
 	mkdir release
 	cd bin && zip -r ../dist.zip .
