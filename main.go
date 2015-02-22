@@ -75,19 +75,16 @@ func main() {
 		c.Bind(&host)
 
 		if host.Hostname != "" {
-			exists := false
-
 			for i, h := range hosts {
 				if h.Hostname == host.Hostname {
-					exists = true
-					hosts[i].Expiration = buildExpiration()
+					diff := hosts
+					diff = append(diff[:i], diff[i+1:]...)
+					hosts = diff
 				}
 			}
 
-			if !exists {
-				host.Expiration = buildExpiration()
-				hosts = append(hosts, host)
-			}
+			host.Expiration = buildExpiration()
+			hosts = append(hosts, host)
 
 			c.JSON(200, "")
 		} else {
