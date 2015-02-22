@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -50,6 +51,19 @@ func buildExpiration() time.Time {
 	expiration = expiration.Add(time.Duration(TTL) * time.Second)
 
 	return expiration
+}
+
+func buildURL(host Host) string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(host.Protocol)
+	buffer.WriteString("://")
+	buffer.WriteString(host.Hostname)
+	buffer.WriteString(":")
+	buffer.WriteString(strconv.Itoa(host.Port))
+	buffer.WriteString(host.Path)
+
+	return string(buffer.Bytes())
 }
 
 func cleanup() {
@@ -124,7 +138,9 @@ func main() {
 		body := bytes.NewBuffer(payload)
 
 		for _, host := range hosts {
-			req, err := http.NewRequest("POST", host.Hostname, body)
+			urlStr := buildURL(host)
+
+			req, err := http.NewRequest("POST", urlStr, body)
 			req.Header.Set("Content-Type", "application/json")
 
 			client := &http.Client{}
