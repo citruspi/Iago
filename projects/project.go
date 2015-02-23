@@ -40,6 +40,16 @@ func (p Project) ArchivePath() string {
 	return string(buffer.Bytes())
 }
 
+func (p Project) ExtractPath() string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(p.Path())
+	buffer.WriteString(".milou/")
+	buffer.WriteString(p.Subdomain)
+
+	return string(buffer.Bytes())
+}
+
 func (p Project) ArchiveLocation() string {
 	var buffer bytes.Buffer
 
