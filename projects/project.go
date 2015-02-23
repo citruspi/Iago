@@ -187,8 +187,14 @@ func Process(n notification.Notification) {
 	for _, project := range List {
 		if project.Repository == n.Repository {
 			if project.Owner == n.Owner {
-				if (project.Version == n.Branch) || (project.Version == n.Commit) {
-					project.Deploy()
+				if project.Version[1] == "#" {
+					if project.Version[:len(project.Version)-1] == n.Commit {
+						project.Deploy()
+					}
+				} else if project.Version[1] == "@" {
+					if project.Version[:len(project.Version)-1] == n.Branch {
+						project.Deploy()
+					}
 				}
 			}
 		}
