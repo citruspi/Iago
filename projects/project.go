@@ -29,6 +29,17 @@ func (p Project) Path() string {
 	return string(buffer.Bytes())
 }
 
+func (p Project) ArchivePath() string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString(p.Path())
+	buffer.WriteString(".milou/")
+	buffer.WriteString(p.Version)
+	buffer.WriteString(".zip")
+
+	return string(buffer.Bytes())
+}
+
 func (p Project) ArchiveLocation() string {
 	var buffer bytes.Buffer
 
