@@ -22,4 +22,4 @@ deploy:
   local-dir: release
   acl: public_read
   on:
-    repo: citruspi/Milou
+    repo: citruspi/milou

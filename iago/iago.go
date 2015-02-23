@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"time"
 
-	conf "github.com/citruspi/Milou/configuration"
+	conf "github.com/citruspi/milou/configuration"
 )
 
 type CheckInPayload struct {

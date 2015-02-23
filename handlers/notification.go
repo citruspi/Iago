@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/citruspi/Iago/notification"
-	conf "github.com/citruspi/Milou/configuration"
-	"github.com/citruspi/Milou/projects"
+	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/projects"
 	"github.com/gin-gonic/gin"
 )
 

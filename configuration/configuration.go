@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/FogCreek/mini"
-	"github.com/citruspi/Milou/projects"
+	"github.com/citruspi/milou/projects"
 )
 
 type iagoConfiguration struct {
