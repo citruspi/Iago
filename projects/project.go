@@ -36,8 +36,7 @@ func (p Project) Path() string {
 func (p Project) ArchivePath() string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(p.Path())
-	buffer.WriteString(".milou/")
+	buffer.WriteString(p.TemporaryPath())
 	buffer.WriteString(p.Version)
 	buffer.WriteString(".zip")
 
@@ -56,8 +55,7 @@ func (p Project) TemporaryPath() string {
 func (p Project) ExtractPath() string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(p.Path())
-	buffer.WriteString(".milou/")
+	buffer.WriteString(p.TemporaryPath())
 	buffer.WriteString(p.Subdomain)
 
 	return string(buffer.Bytes())
