@@ -138,6 +138,20 @@ func (p Project) Download() {
 	}
 }
 
+func (p Project) Place() {
+	err := os.RemoveAll(p.Path())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = os.Rename(p.ExtractPath(), p.Path())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func (p Project) Prepare() {
 	if _, err := os.Stat(p.TemporaryPath()); os.IsNotExist(err) {
 		err = os.MkdirAll(p.TemporaryPath(), 0700)
