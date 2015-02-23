@@ -49,7 +49,7 @@ func (p Project) ArchivePath() string {
 func (p Project) TemporaryPath() string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(p.Path())
+	buffer.WriteString(p.Path()[:len(p.Path())-1])
 	buffer.WriteString(".milou/")
 
 	return string(buffer.Bytes())
