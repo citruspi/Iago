@@ -16,7 +16,7 @@ iagod:
 
 	mkdir -p ./bin
 	
-	go build iagod/main.go
+	go build main.go
 	mv main ./bin/iagod
 
 release: clean iagod
