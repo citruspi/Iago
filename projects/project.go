@@ -1,7 +1,11 @@
 package projects
 
 import (
+	"archive/zip"
 	"bytes"
+	"io"
+	"log"
+	"net/http"
 )
 
 type Project struct {
@@ -104,4 +108,22 @@ func (p Project) Extract() error {
 		}
 	}
 	return nil
+}
+
+func (p Project) Download() {
+	response, err := http.Get(p.ArchiveLocation())
+	defer response.Body.Close()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	archive, err := os.Create(p.ArchivePath())
+	defer archive.close()
+
+	_, err = io.Copy(archive, response.Body)
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
