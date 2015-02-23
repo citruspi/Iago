@@ -134,3 +134,13 @@ func (p Project) Download() {
 		log.Fatal(err)
 	}
 }
+
+func (p Project) Prepare() {
+	if _, err = os.Stat(p.TemporaryPath()); os.IsNotExist(err) {
+		err = os.MkdirAll(p.TemporaryPath(), 0700)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+}
