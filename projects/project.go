@@ -3,6 +3,7 @@ package projects
 import (
 	"archive/zip"
 	"bytes"
+	"github.com/citruspi/Iago/notification"
 	"io"
 	"log"
 	"net/http"
@@ -180,4 +181,16 @@ func (p Project) Deploy() {
 	p.Extract()
 	p.Place()
 	p.CleanUp()
+}
+
+func Process(n notification.Notification) {
+	for _, project := range List {
+		if project.Repository == n.Repository {
+			if project.Owner == n.Owner {
+				if (project.Version == n.Branch) || (project.Version == n.Commit) {
+					project.Deploy()
+				}
+			}
+		}
+	}
 }
