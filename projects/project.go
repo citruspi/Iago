@@ -129,7 +129,7 @@ func (p Project) Download() {
 	}
 
 	archive, err := os.Create(p.ArchivePath())
-	defer archive.close()
+	defer archive.Close()
 
 	_, err = io.Copy(archive, response.Body)
 
@@ -139,7 +139,7 @@ func (p Project) Download() {
 }
 
 func (p Project) Prepare() {
-	if _, err = os.Stat(p.TemporaryPath()); os.IsNotExist(err) {
+	if _, err := os.Stat(p.TemporaryPath()); os.IsNotExist(err) {
 		err = os.MkdirAll(p.TemporaryPath(), 0700)
 
 		if err != nil {
@@ -149,7 +149,7 @@ func (p Project) Prepare() {
 }
 
 func (p Project) CleanUp() {
-	err = os.RemoveAll(p.TemporaryPath())
+	err := os.RemoveAll(p.TemporaryPath())
 
 	if err != nil {
 		log.Fatal(err)
