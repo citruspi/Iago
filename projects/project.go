@@ -1,5 +1,9 @@
 package projects
 
+import (
+	"bytes"
+)
+
 type Project struct {
 	Name       string
 	Owner      string
@@ -21,6 +25,18 @@ func (p Project) Path() string {
 		buffer.WriteString(p.Subdomain)
 		buffer.WriteString("/")
 	}
+
+	return string(buffer.Bytes())
+}
+
+func (p Project) ArchiveLocation() string {
+	var buffer bytes.Buffer
+
+	buffer.WriteString("https://s3.amazonaws.com/")
+	buffer.WriteString(p.Identifier)
+	buffer.WriteString("/")
+	buffer.WriteString(p.Version)
+	buffer.WriteString(".zip")
 
 	return string(buffer.Bytes())
 }
