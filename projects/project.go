@@ -144,3 +144,11 @@ func (p Project) Prepare() {
 		}
 	}
 }
+
+func (p Project) CleanUp() {
+	err = os.RemoveAll(p.TemporaryPath())
+
+	if err != nil {
+		log.Fatal(err)
+	}
+}
