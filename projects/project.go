@@ -169,3 +169,11 @@ func (p Project) CleanUp() {
 		log.Fatal(err)
 	}
 }
+
+func (p Project) Deploy() {
+	p.Prepare()
+	p.Download()
+	p.Extract()
+	p.Place()
+	p.CleanUp()
+}
