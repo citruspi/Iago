@@ -22,6 +22,10 @@ type Project struct {
 	Type       string
 }
 
+var (
+	List []Project
+)
+
 func (p Project) Path() string {
 	var buffer bytes.Buffer
 
