@@ -6,7 +6,7 @@ go:
 install:
 - go get github.com/gin-gonic/gin
 - go get github.com/FogCreek/mini
-- go get github.com/citruspi/Iago/
+- go get github.com/citruspi/iago/
 
 script: true
 
