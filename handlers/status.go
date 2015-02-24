@@ -3,7 +3,7 @@ package handlers
 import (
 	"time"
 
-	"github.com/citruspi/Iago/host"
+	"github.com/citruspi/iago/host"
 	"github.com/gin-gonic/gin"
 )
 

@@ -9,7 +9,7 @@ import (
 	"log"
 	"math/big"
 
-	"github.com/citruspi/Iago/travis"
+	"github.com/citruspi/iago/travis"
 )
 
 type Notification struct {

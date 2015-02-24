@@ -8,9 +8,9 @@ import (
 	"strconv"
 	"time"
 
-	conf "github.com/citruspi/Iago/configuration"
-	"github.com/citruspi/Iago/notification"
-	"github.com/citruspi/Iago/travis"
+	conf "github.com/citruspi/iago/configuration"
+	"github.com/citruspi/iago/notification"
+	"github.com/citruspi/iago/travis"
 )
 
 type Host struct {

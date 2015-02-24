@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"github.com/citruspi/Iago/host"
-	"github.com/citruspi/Iago/travis"
+	"github.com/citruspi/iago/host"
+	"github.com/citruspi/iago/travis"
 	"github.com/gin-gonic/gin"
 )
 

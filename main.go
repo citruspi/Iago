@@ -1,9 +1,9 @@
 package main
 
 import (
-	conf "github.com/citruspi/Iago/configuration"
-	"github.com/citruspi/Iago/handlers"
-	"github.com/citruspi/Iago/host"
+	conf "github.com/citruspi/iago/configuration"
+	"github.com/citruspi/iago/handlers"
+	"github.com/citruspi/iago/host"
 	"github.com/gin-gonic/gin"
 )
 

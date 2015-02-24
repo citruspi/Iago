@@ -4,7 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 
-	conf "github.com/citruspi/Iago/configuration"
+	conf "github.com/citruspi/iago/configuration"
 )
 
 type Announcement struct {
