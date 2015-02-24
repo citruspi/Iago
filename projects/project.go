@@ -3,7 +3,7 @@ package projects
 import (
 	"archive/zip"
 	"bytes"
-	"github.com/citruspi/Iago/notification"
+	"github.com/citruspi/iago/notification"
 	"io"
 	"log"
 	"net/http"
