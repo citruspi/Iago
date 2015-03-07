@@ -9,13 +9,15 @@ import (
 	"time"
 
 	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/projects"
 )
 
 type CheckInPayload struct {
-	Hostname string `json:"hostname"`
-	Port     int64  `json:"port"`
-	Path     string `json:"path"`
-	Protocol string `json:"protocol"`
+	Hostname     string   `json:"hostname"`
+	Port         int64    `json:"port"`
+	Path         string   `json:"path"`
+	Protocol     string   `json:"protocol"`
+	Repositories []string `json:"repositories"`
 }
 
 var (
@@ -41,11 +43,24 @@ func CheckIn() {
 		buildEndpoint()
 	}
 
+	var repositories []string
+
+	for _, repository := range projects.List {
+		var buffer bytes.Buffer
+
+		buffer.WriteString(repository.Owner)
+		buffer.WriteString("/")
+		buffer.WriteString(repository.Repository)
+
+		repositories = append(repositories, string(buffer.Bytes()))
+	}
+
 	payload := CheckInPayload{
-		Protocol: conf.CheckIn.Protocol,
-		Hostname: conf.CheckIn.Hostname,
-		Port:     conf.CheckIn.Port,
-		Path:     conf.CheckIn.Path,
+		Protocol:     conf.CheckIn.Protocol,
+		Hostname:     conf.CheckIn.Hostname,
+		Port:         conf.CheckIn.Port,
+		Path:         conf.CheckIn.Path,
+		Repositories: repositories,
 	}
 
 	for {
