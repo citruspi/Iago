@@ -14,11 +14,12 @@ import (
 )
 
 type Host struct {
-	Hostname   string    `json:"hostname"`
-	Expiration time.Time `json:"expiration"`
-	Protocol   string    `json:"protocol"`
-	Port       int       `json:"port"`
-	Path       string    `json:"path"`
+	Hostname     string    `json:"hostname"`
+	Expiration   time.Time `json:"expiration"`
+	Protocol     string    `json:"protocol"`
+	Port         int       `json:"port"`
+	Path         string    `json:"path"`
+	Repositories []string  `json:"repositories"`
 }
 
 var (
