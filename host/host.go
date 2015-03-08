@@ -110,12 +110,12 @@ func (h Host) CheckIn() {
 	List = append(List, h)
 
 	log.WithFields(log.Fields{
-		"host":          h.Hostname,
-		"protocol":      h.Protocol,
-		"port":          h.Port,
-		"path":          h.Path,
-		"expiration":    h.Expiration,
-		"repositorites": h.Repositories,
+		"host":         h.Hostname,
+		"protocol":     h.Protocol,
+		"port":         h.Port,
+		"path":         h.Path,
+		"expiration":   h.Expiration,
+		"repositories": h.Repositories,
 	}).Info("Finished checking in host")
 }
 
