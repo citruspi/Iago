@@ -95,19 +95,31 @@ func Notify(announcement travis.Announcement) {
 	content, _ := json.Marshal(n)
 	body := bytes.NewBuffer(content)
 
+	var buffer bytes.Buffer
+
+	buffer.WriteString(n.Owner)
+	buffer.WriteString("/")
+	buffer.WriteString(n.Repository)
+
+	identifier := string(buffer.Bytes())
+
 	for _, host := range List {
-		urlStr := host.URL()
+		for _, repository := range host.Repositories {
+			if repository == identifier {
+				urlStr := host.URL()
 
-		req, err := http.NewRequest("POST", urlStr, body)
-		req.Header.Set("Content-Type", "application/json")
+				req, err := http.NewRequest("POST", urlStr, body)
+				req.Header.Set("Content-Type", "application/json")
 
-		client := &http.Client{}
-		resp, err := client.Do(req)
+				client := &http.Client{}
+				resp, err := client.Do(req)
 
-		if err != nil {
-			log.Fatal(err)
+				if err != nil {
+					log.Fatal(err)
+				}
+
+				defer resp.Body.Close()
+			}
 		}
-
-		defer resp.Body.Close()
 	}
 }
