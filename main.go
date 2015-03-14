@@ -13,9 +13,5 @@ func main() {
 
 	router.POST("/announce/", handlers.Announce)
 
-	if conf.Web.Status {
-		router.GET("/status/", handlers.Status)
-	}
-
 	router.Run(conf.Web.Address)
 }
