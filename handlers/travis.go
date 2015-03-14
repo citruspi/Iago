@@ -11,7 +11,7 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
-func Announce(c *gin.Context) {
+func TravisWebhook(c *gin.Context) {
 	var announcement travis.Announcement
 
 	c.Bind(&announcement)
