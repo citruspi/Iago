@@ -1,11 +1,15 @@
 package main
 
 import (
+	"encoding/json"
+	"log"
+	"time"
+
+	"github.com/citruspi/iago/notifications"
 	conf "github.com/citruspi/milou/configuration"
-	"github.com/citruspi/milou/handlers"
-	"github.com/citruspi/milou/iago"
 	"github.com/citruspi/milou/projects"
-	"github.com/gin-gonic/gin"
+	"github.com/fzzy/radix/extra/pubsub"
+	"github.com/fzzy/radix/redis"
 )
 
 func main() {
@@ -15,11 +19,38 @@ func main() {
 		project.Deploy()
 	}
 
-	go iago.CheckIn()
+	timeout := time.Duration(10) * time.Second
 
-	router := gin.Default()
+	conn, err := redis.DialTimeout("tcp", "127.0.0.1:6379", timeout)
 
-	router.POST("/", handlers.Notification)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	router.Run(conf.Web.Address)
+	defer conn.Close()
+
+	psc := pubsub.NewSubClient(conn)
+
+	for _, project := range projects.List {
+		_ = psc.Subscribe("iago." + project.Owner + "." + project.Repository)
+	}
+
+	for {
+		psr := psc.Receive()
+
+		if !psr.Timeout() {
+			var notification notifications.Notification
+
+			err = json.Unmarshal([]byte(psr.Message), &notification)
+
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			projects.Process(notification)
+
+		} else {
+			continue
+		}
+	}
 }
