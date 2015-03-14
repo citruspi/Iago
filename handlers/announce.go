@@ -2,7 +2,7 @@ package handlers
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/citruspi/iago/host"
+	"github.com/citruspi/iago/notification"
 	"github.com/citruspi/iago/travis"
 	"github.com/gin-gonic/gin"
 )
@@ -54,7 +54,8 @@ func Announce(c *gin.Context) {
 			"commit":     announcement.Payload.Commit,
 		}).Debug("Travis CI announcement is valid")
 
-		go host.Notify(announcement)
+		n := notification.Build(announcement)
+		n.Publish()
 
 		c.JSON(200, "")
 	}

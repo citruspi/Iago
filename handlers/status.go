@@ -3,13 +3,11 @@ package handlers
 import (
 	"time"
 
-	"github.com/citruspi/iago/host"
 	"github.com/gin-gonic/gin"
 )
 
 type status struct {
-	Hosts  []host.Host `json:"hosts"`
-	Uptime float64     `json:"uptime"`
+	Uptime float64 `json:"uptime"`
 }
 
 var (
@@ -18,7 +16,6 @@ var (
 
 func Status(c *gin.Context) {
 	s := status{}
-	s.Hosts = host.List
 	s.Uptime = time.Now().Sub(boot).Seconds()
 
 	c.JSON(200, s)
