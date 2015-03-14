@@ -5,7 +5,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/citruspi/iago/travis"
+	"github.com/citruspi/iago/webhooks/travis"
 	"github.com/fzzy/radix/redis"
 )
 

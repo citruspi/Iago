@@ -3,7 +3,7 @@ package handlers
 import (
 	log "github.com/Sirupsen/logrus"
 	"github.com/citruspi/iago/notification"
-	"github.com/citruspi/iago/travis"
+	"github.com/citruspi/iago/webhooks/travis"
 	"github.com/gin-gonic/gin"
 )
 
