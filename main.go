@@ -11,7 +11,7 @@ func main() {
 
 	router := gin.Default()
 
-	router.POST("/announce/", handlers.TravisWebhook)
+	router.POST("/webhooks/travis/", handlers.TravisWebhook)
 
 	router.Run(conf.Web.Address)
 }
