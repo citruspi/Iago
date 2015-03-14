@@ -2,7 +2,7 @@ package handlers
 
 import (
 	log "github.com/Sirupsen/logrus"
-	"github.com/citruspi/iago/notification"
+	"github.com/citruspi/iago/notifications"
 	"github.com/citruspi/iago/webhooks/travis"
 	"github.com/gin-gonic/gin"
 )
@@ -54,7 +54,7 @@ func TravisWebhook(c *gin.Context) {
 			"commit":     announcement.Payload.Commit,
 		}).Debug("Travis CI announcement is valid")
 
-		n := notification.Build(announcement)
+		n := notifications.Build(announcement)
 		n.Publish()
 
 		c.JSON(200, "")
