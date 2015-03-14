@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"encoding/json"
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
@@ -16,37 +15,9 @@ func init() {
 func TravisWebhook(w http.ResponseWriter, r *http.Request) {
 	var announcement travis.Announcement
 
-	decoder := json.NewDecoder(r.Body)
+	announcement = travis.ProcessRequest(r)
 
-	err := decoder.Decode(&announcement)
-
-	if err != nil {
-		log.Error("Failed to decode Travis CI announcement")
-	}
-
-	log.WithFields(log.Fields{
-		"owner":      announcement.Payload.Repository.Owner,
-		"repository": announcement.Payload.Repository.Name,
-		"branch":     announcement.Payload.Branch,
-		"commit":     announcement.Payload.Commit,
-	}).Info("Received Travis CI announcement")
-
-	announcement.Authorization = r.Header.Get("Authorization")
-
-	if announcement.Authorization == "" {
-		log.Error("Failed to retrieve Travis CI authorization")
-	} else {
-		log.Debug("Retrieved Travis CI authorization")
-	}
-
-	log.WithFields(log.Fields{
-		"owner":      announcement.Payload.Repository.Owner,
-		"repository": announcement.Payload.Repository.Name,
-		"branch":     announcement.Payload.Branch,
-		"commit":     announcement.Payload.Commit,
-	}).Info("Validating Travis CI announcement")
-
-	if !announcement.Valid() {
+	if !announcement.Valid {
 		log.WithFields(log.Fields{
 			"owner":      announcement.Payload.Repository.Owner,
 			"repository": announcement.Payload.Repository.Name,
@@ -58,12 +29,24 @@ func TravisWebhook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if !announcement.Authentic {
+		log.WithFields(log.Fields{
+			"owner":      announcement.Payload.Repository.Owner,
+			"repository": announcement.Payload.Repository.Name,
+			"branch":     announcement.Payload.Branch,
+			"commit":     announcement.Payload.Commit,
+		}).Error("Travis CI announcement is invalid")
+
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+
 	log.WithFields(log.Fields{
 		"owner":      announcement.Payload.Repository.Owner,
 		"repository": announcement.Payload.Repository.Name,
 		"branch":     announcement.Payload.Branch,
 		"commit":     announcement.Payload.Commit,
-	}).Debug("Travis CI announcement is valid")
+	}).Debug("Travis CI announcement is valid and authentic")
 
 	n := notifications.Build(announcement)
 	n.Publish()

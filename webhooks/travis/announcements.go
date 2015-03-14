@@ -3,6 +3,8 @@ package travis
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"encoding/json"
+	"net/http"
 
 	log "github.com/Sirupsen/logrus"
 	conf "github.com/citruspi/iago/configuration"
@@ -11,6 +13,8 @@ import (
 type Announcement struct {
 	Payload       Payload `json:"payload"`
 	Authorization string
+	Valid         bool
+	Authentic     bool
 }
 
 type Payload struct {
@@ -55,32 +59,84 @@ func calculateAuthorization(owner string, repository string) string {
 	return authorization
 }
 
-func (a Announcement) Valid() bool {
-	if (a.Payload.Status != "Passed") && (a.Payload.Status != "Fixed") {
-		log.WithFields(log.Fields{
-			"status":     a.Payload.Status,
-			"branch":     a.Payload.Branch,
-			"commit":     a.Payload.Commit,
-			"owner":      a.Payload.Repository.Owner,
-			"repository": a.Payload.Repository.Name,
-		}).Error("Announcement with unacceptable status received")
+func ProcessRequest(r *http.Request) Announcement {
+	var announcement Announcement
 
-		return false
+	decoder := json.NewDecoder(r.Body)
+
+	err := decoder.Decode(&announcement)
+
+	if err != nil {
+		log.Error("Failed to decode Travis CI announcement")
+		return announcement
 	}
 
-	if conf.Travis.Authenticate {
-		owner := a.Payload.Repository.Owner
-		repository := a.Payload.Repository.Name
+	log.WithFields(log.Fields{
+		"owner":      announcement.Payload.Repository.Owner,
+		"repository": announcement.Payload.Repository.Name,
+		"branch":     announcement.Payload.Branch,
+		"commit":     announcement.Payload.Commit,
+	}).Info("Received Travis CI announcement")
 
-		if a.Authorization != calculateAuthorization(owner, repository) {
+	announcement.Authorization = r.Header.Get("Authorization")
+
+	if announcement.Authorization == "" {
+		log.Error("Failed to retrieve Travis CI authorization")
+		return announcement
+	}
+
+	log.Debug("Retrieved Travis CI authorization")
+
+	log.WithFields(log.Fields{
+		"owner":      announcement.Payload.Repository.Owner,
+		"repository": announcement.Payload.Repository.Name,
+		"branch":     announcement.Payload.Branch,
+		"commit":     announcement.Payload.Commit,
+	}).Info("Validating Travis CI announcement")
+
+	if (announcement.Payload.Status != "Passed") && (announcement.Payload.Status != "Fixed") {
+		log.WithFields(log.Fields{
+			"status":     announcement.Payload.Status,
+			"branch":     announcement.Payload.Branch,
+			"commit":     announcement.Payload.Commit,
+			"owner":      announcement.Payload.Repository.Owner,
+			"repository": announcement.Payload.Repository.Name,
+		}).Error("Announcement with unacceptable status received")
+
+		return announcement
+	}
+
+	if (announcement.Payload.Branch == "") ||
+		(announcement.Payload.Commit == "") ||
+		(announcement.Payload.Repository.Owner == "") ||
+		(announcement.Payload.Repository.Name == "") {
+
+		log.WithFields(log.Fields{
+			"status":     announcement.Payload.Status,
+			"branch":     announcement.Payload.Branch,
+			"commit":     announcement.Payload.Commit,
+			"owner":      announcement.Payload.Repository.Owner,
+			"repository": announcement.Payload.Repository.Name,
+		}).Error("Incomplete announcement received")
+
+		return announcement
+	}
+
+	announcement.Valid = true
+
+	if conf.Travis.Authenticate {
+		owner := announcement.Payload.Repository.Owner
+		repository := announcement.Payload.Repository.Name
+
+		if announcement.Authorization != calculateAuthorization(owner, repository) {
 			log.WithFields(log.Fields{
-				"received":   a.Authorization,
+				"received":   announcement.Authorization,
 				"calculated": calculateAuthorization(owner, repository),
 			}).Error("Incorrect authorization received")
-
-			return false
+		} else {
+			announcement.Authentic = true
 		}
 	}
 
-	return true
+	return announcement
 }
