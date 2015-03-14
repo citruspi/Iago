@@ -3,7 +3,7 @@ package projects
 import (
 	"archive/zip"
 	"bytes"
-	"github.com/citruspi/iago/notification"
+	"github.com/citruspi/iago/notifications"
 	"io"
 	"log"
 	"net/http"
@@ -183,7 +183,7 @@ func (p Project) Deploy() {
 	p.CleanUp()
 }
 
-func Process(n notification.Notification) {
+func Process(n notifications.Notification) {
 	for _, project := range List {
 		if project.Repository == n.Repository {
 			if project.Owner == n.Owner {

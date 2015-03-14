@@ -1,13 +1,13 @@
 package handlers
 
 import (
-	"github.com/citruspi/iago/notification"
+	"github.com/citruspi/iago/notifications"
 	"github.com/citruspi/milou/projects"
 	"github.com/gin-gonic/gin"
 )
 
 func Notification(c *gin.Context) {
-	var n notification.Notification
+	var n notifications.Notification
 
 	c.Bind(&n)
 
