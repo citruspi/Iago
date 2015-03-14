@@ -159,10 +159,6 @@ func Notify(announcement travis.Announcement) {
 		"branch":     n.Branch,
 	}).Debug("Built notification")
 
-	if conf.Notification.Sign {
-		n = n.Sign(conf.Notification.PrivateKey)
-	}
-
 	content, _ := json.Marshal(n)
 	body := bytes.NewBuffer(content)
 

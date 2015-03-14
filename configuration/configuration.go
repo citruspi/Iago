@@ -21,16 +21,10 @@ type travisConfiguration struct {
 	Token        string
 }
 
-type notificationConfiguration struct {
-	Sign       bool
-	PrivateKey string
-}
-
 var (
-	Host         hostConfiguration
-	Web          webConfiguration
-	Travis       travisConfiguration
-	Notification notificationConfiguration
+	Host   hostConfiguration
+	Web    webConfiguration
+	Travis travisConfiguration
 )
 
 func Process() {
@@ -50,7 +44,4 @@ func Process() {
 
 	Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
 	Travis.Token = config.StringFromSection("Travis", "Token", "")
-
-	Notification.Sign = config.BooleanFromSection("Notification", "Sign", false)
-	Notification.PrivateKey = config.StringFromSection("Notification", "PrivateKey", "/etc/iagod/key")
 }
