@@ -4,7 +4,6 @@ import (
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/citruspi/iago/notifications"
 	"github.com/citruspi/iago/webhooks/travis"
 )
 
@@ -48,8 +47,8 @@ func TravisWebhook(w http.ResponseWriter, r *http.Request) {
 		"commit":     announcement.Payload.Commit,
 	}).Debug("Travis CI announcement is valid and authentic")
 
-	n := notifications.Build(announcement)
-	n.Publish()
+	notification := announcement.ToNotification()
+	notification.Publish()
 
 	w.WriteHeader(http.StatusOK)
 }

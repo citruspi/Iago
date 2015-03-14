@@ -8,6 +8,7 @@ import (
 
 	log "github.com/Sirupsen/logrus"
 	conf "github.com/citruspi/iago/configuration"
+	"github.com/citruspi/iago/notifications"
 )
 
 type Announcement struct {
@@ -57,6 +58,23 @@ func calculateAuthorization(owner string, repository string) string {
 	}).Debug("Calculated Travis CI authorization")
 
 	return authorization
+}
+
+func (announcement Announcement) ToNotification() notifications.Notification {
+	log.WithFields(log.Fields{
+		"repository": announcement.Payload.Repository.Name,
+		"owner":      announcement.Payload.Repository.Owner,
+		"commit":     announcement.Payload.Commit,
+		"branch":     announcement.Payload.Branch,
+	}).Debug("Building deployment notification")
+
+	notification := notifications.Notification{}
+	notification.Repository = announcement.Payload.Repository.Name
+	notification.Owner = announcement.Payload.Repository.Owner
+	notification.Commit = announcement.Payload.Commit
+	notification.Branch = announcement.Payload.Branch
+
+	return notification
 }
 
 func ProcessRequest(r *http.Request) Announcement {
