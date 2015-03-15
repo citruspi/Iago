@@ -19,7 +19,7 @@ milou:
 	go build main.go
 	mv main ./bin/milou
 
-release: clean iago
+release: clean milou
 
 	mkdir release
 	cd bin && zip -r ../dist.zip .
