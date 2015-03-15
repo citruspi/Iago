@@ -25,7 +25,7 @@ func init() {
 	conf = configuration.Load()
 }
 
-func (n Notification) Publish() {
+func (n Notification) Act() {
 	var err error
 	var channel string
 	var message string

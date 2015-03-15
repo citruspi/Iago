@@ -58,7 +58,7 @@ func Travis(w http.ResponseWriter, r *http.Request) {
 	notification := announcement.ToNotification()
 
 	if conf.Mode == "server" {
-		notification.Publish()
+		notification.Act()
 	} else if conf.Mode == "standalone" {
 		projects.Process(notification)
 	}
