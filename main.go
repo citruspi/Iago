@@ -21,17 +21,10 @@ func init() {
 }
 
 func main() {
-	if conf.Mode == "server" {
+	if conf.Mode == "server" || conf.Mode == "standalone" {
 		http.HandleFunc("/webhooks/travis/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
-	} else if conf.Mode == "standalone" {
-		projects.DeployAll()
-
-		http.HandleFunc("/", handlers.Travis)
-		http.ListenAndServe(conf.Web.Address, nil)
 	} else if conf.Mode == "client" {
-		projects.DeployAll()
-
 		var channels []string
 
 		for _, project := range projects.Projects {

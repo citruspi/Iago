@@ -55,6 +55,10 @@ func init() {
 
 		Projects = append(Projects, project)
 	}
+
+	if conf.Mode == "standalone" || conf.Mode == "client" {
+		DeployAll()
+	}
 }
 
 func (p Project) ArchivePath() string {
