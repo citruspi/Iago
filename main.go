@@ -20,7 +20,7 @@ func main() {
 	if conf.Iago.Mode == "server" {
 		http.HandleFunc("/", handlers.TravisWebhook)
 		http.ListenAndServe(conf.Web.Address, nil)
-	} else if confi.Iago.Mode == "client" {
+	} else if conf.Iago.Mode == "client" {
 		for _, project := range projects.List {
 			project.Deploy()
 		}
