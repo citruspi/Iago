@@ -5,19 +5,19 @@ ifeq ($(strip $(BRANCH)),)
 	BRANCH:=$(shell git branch | sed -n -e 's/^\* \(.*\)/\1/p')
 endif
 
-all: clean iago
+all: clean milou
 
 clean:
 
 	rm -rf ./bin
 	rm -rf ./release
 
-iago:
+milou:
 
 	mkdir -p ./bin
 
 	go build main.go
-	mv main ./bin/iago
+	mv main ./bin/milou
 
 release: clean iago
 
@@ -29,4 +29,4 @@ release: clean iago
 
 	rm dist.zip
 
-.PHONY: clean iago
+.PHONY: clean milou

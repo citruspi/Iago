@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
-	conf "github.com/citruspi/iago/configuration"
-	"github.com/citruspi/iago/handlers"
-	"github.com/citruspi/iago/notifications"
-	"github.com/citruspi/iago/projects"
+	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/handlers"
+	"github.com/citruspi/milou/notifications"
+	"github.com/citruspi/milou/projects"
 	"github.com/fzzy/radix/extra/pubsub"
 	"github.com/fzzy/radix/redis"
 )
@@ -17,10 +17,10 @@ import (
 func main() {
 	conf.Process()
 
-	if conf.Iago.Mode == "server" {
+	if conf.Milou.Mode == "server" {
 		http.HandleFunc("/", handlers.TravisWebhook)
 		http.ListenAndServe(conf.Web.Address, nil)
-	} else if conf.Iago.Mode == "client" {
+	} else if conf.Milou.Mode == "client" {
 		for _, project := range projects.List {
 			project.Deploy()
 		}
@@ -38,7 +38,7 @@ func main() {
 		psc := pubsub.NewSubClient(conn)
 
 		for _, project := range projects.List {
-			_ = psc.Subscribe("iago." + project.Owner + "." + project.Repository)
+			_ = psc.Subscribe("milou." + project.Owner + "." + project.Repository)
 		}
 
 		for {

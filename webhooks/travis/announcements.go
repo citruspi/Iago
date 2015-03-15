@@ -7,8 +7,8 @@ import (
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
-	conf "github.com/citruspi/iago/configuration"
-	"github.com/citruspi/iago/notifications"
+	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/notifications"
 )
 
 type Announcement struct {

@@ -4,7 +4,7 @@ import (
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
-	"github.com/citruspi/iago/webhooks/travis"
+	"github.com/citruspi/milou/webhooks/travis"
 )
 
 func init() {

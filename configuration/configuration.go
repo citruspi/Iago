@@ -6,10 +6,10 @@ import (
 	"log"
 
 	"github.com/FogCreek/mini"
-	"github.com/citruspi/iago/projects"
+	"github.com/citruspi/milou/projects"
 )
 
-type iagoConfiguration struct {
+type milouConfiguration struct {
 	Mode string
 }
 
@@ -23,13 +23,13 @@ type travisConfiguration struct {
 }
 
 var (
-	Iago   iagoConfiguration
+	Milou  milouConfiguration
 	Web    webConfiguration
 	Travis travisConfiguration
 )
 
 func Process() {
-	path := flag.String("config", "/etc/iagod.ini", "Configuration file path")
+	path := flag.String("config", "/etc/milou.ini", "Configuration file path")
 	flag.Parse()
 
 	config, err := mini.LoadConfiguration(*path)
@@ -38,7 +38,7 @@ func Process() {
 		log.Fatal(err)
 	}
 
-	Iago.Mode = config.StringFromSection("Iago", "Mode", "server")
+	Milou.Mode = config.StringFromSection("Milou", "Mode", "server")
 
 	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
 
