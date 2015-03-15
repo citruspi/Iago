@@ -7,7 +7,7 @@ import (
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
-	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/configuration"
 	"github.com/citruspi/milou/notifications"
 )
 
@@ -31,29 +31,35 @@ type Repository struct {
 	Owner string `json:"owner_name"`
 }
 
+var (
+	conf configuration.Configuration
+)
+
 func init() {
 	log.SetLevel(log.DebugLevel)
+
+	conf = configuration.Load()
 }
 
 func calculateAuthorization(owner string, repository string) string {
 	log.WithFields(log.Fields{
 		"owner":      owner,
 		"repository": repository,
-		"token":      conf.Travis.Token,
+		"token":      conf.TravisCI.Token,
 	}).Debug("Calculating Travis CI authorization")
 
 	hash := sha256.New()
 	hash.Write([]byte(owner))
 	hash.Write([]byte("/"))
 	hash.Write([]byte(repository))
-	hash.Write([]byte(conf.Travis.Token))
+	hash.Write([]byte(conf.TravisCI.Token))
 
 	authorization := hex.EncodeToString(hash.Sum(nil))
 
 	log.WithFields(log.Fields{
 		"owner":         owner,
 		"repository":    repository,
-		"token":         conf.Travis.Token,
+		"token":         conf.TravisCI.Token,
 		"authorization": authorization,
 	}).Debug("Calculated Travis CI authorization")
 
@@ -142,7 +148,7 @@ func ProcessRequest(r *http.Request) Announcement {
 
 	announcement.Valid = true
 
-	if conf.Travis.Authenticate {
+	if conf.TravisCI.Authenticate {
 		owner := announcement.Payload.Repository.Owner
 		repository := announcement.Payload.Repository.Name
 

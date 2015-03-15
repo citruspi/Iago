@@ -1,66 +1,79 @@
 package configuration
 
 import (
-	"bytes"
+	"encoding/json"
 	"flag"
+	"io/ioutil"
 	"log"
 
-	"github.com/FogCreek/mini"
 	"github.com/citruspi/milou/projects"
 )
 
-type webConfiguration struct {
-	Address string
-}
-
-type travisConfiguration struct {
-	Authenticate bool
-	Token        string
+type Configuration struct {
+	Mode string `json:"mode"`
+	Web  struct {
+		Address string `json:"address"`
+	} `json:"web"`
+	TravisCI struct {
+		Authenticate bool   `json:"authenticate"`
+		Token        string `json:"token"`
+	} `json:"travis-ci"`
+	Projects []struct {
+		Name       string `json:"name"`
+		Owner      string `json:"owner"`
+		Repository string `json:"repository"`
+		Version    string `json:"version"`
+		Identifier string `json:"identifier"`
+		Domain     string `json:"domain"`
+		Subdomain  string `json:"subdomain"`
+		Type       string `json:"type"`
+	} `json:"projects"`
 }
 
 var (
-	Mode   string
-	Web    webConfiguration
-	Travis travisConfiguration
+	conf   Configuration
+	loaded bool
 )
 
-func Process() {
-	path := flag.String("config", "/etc/milou.ini", "Configuration file path")
+func init() {
+	conf := Load()
+
+	for _, project := range conf.Projects {
+		projects.List = append(projects.List, projects.Project{
+			Name:       project.Name,
+			Owner:      project.Owner,
+			Repository: project.Version,
+			Identifier: project.Identifier,
+			Domain:     project.Domain,
+			Subdomain:  project.Subdomain,
+			Type:       project.Type,
+		})
+	}
+}
+
+func Load() Configuration {
+	if loaded {
+		return conf
+	}
+
+	var conf Configuration
+
+	path := flag.String("config", "/etc/milou.conf", "Configuration file path")
 	flag.Parse()
 
-	config, err := mini.LoadConfiguration(*path)
+	source, err := ioutil.ReadFile(*path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	Mode = config.String("mode", "server")
+	err = json.Unmarshal(source, &conf)
 
-	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
-
-	Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
-	Travis.Token = config.StringFromSection("Travis", "Token", "")
-
-	projectList := config.StringsFromSection("Milou", "Projects")
-
-	for _, projectName := range projectList {
-		project := projects.Project{}
-
-		var buffer bytes.Buffer
-		buffer.WriteString("Project-")
-		buffer.WriteString(projectName)
-
-		section := string(buffer.Bytes())
-
-		project.Name = config.StringFromSection(section, "Name", "")
-		project.Owner = config.StringFromSection(section, "Owner", "")
-		project.Repository = config.StringFromSection(section, "Repository", "")
-		project.Version = config.StringFromSection(section, "Version", "")
-		project.Identifier = config.StringFromSection(section, "Identifier", "")
-		project.Domain = config.StringFromSection(section, "Domain", "")
-		project.Subdomain = config.StringFromSection(section, "Subdomain", "")
-		project.Type = config.StringFromSection(section, "Type", "")
-
-		projects.List = append(projects.List, project)
+	if err != nil {
+		log.Fatal(err)
 	}
+
+	loaded = true
+
+	return conf
 }

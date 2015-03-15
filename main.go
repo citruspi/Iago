@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	conf "github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/configuration"
 	"github.com/citruspi/milou/handlers"
 	"github.com/citruspi/milou/notifications"
 	"github.com/citruspi/milou/projects"
@@ -14,9 +14,15 @@ import (
 	"github.com/fzzy/radix/redis"
 )
 
-func main() {
-	conf.Process()
+var (
+	conf configuration.Configuration
+)
 
+func init() {
+	conf = configuration.Load()
+}
+
+func main() {
 	if conf.Mode == "server" {
 		http.HandleFunc("/", handlers.TravisWebhook)
 		http.ListenAndServe(conf.Web.Address, nil)
