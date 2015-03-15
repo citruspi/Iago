@@ -1,16 +1,28 @@
 package configuration
 
 import (
-	"bytes"
 	"flag"
 	"log"
 
 	"github.com/FogCreek/mini"
-	"github.com/citruspi/milou/projects"
+)
+
+type webConfiguration struct {
+	Address string
+}
+
+type travisConfiguration struct {
+	Authenticate bool
+	Token        string
+}
+
+var (
+	Web    webConfiguration
+	Travis travisConfiguration
 )
 
 func Process() {
-	path := flag.String("config", "/etc/miloud.ini", "Configuration file path")
+	path := flag.String("config", "/etc/iagod.ini", "Configuration file path")
 	flag.Parse()
 
 	config, err := mini.LoadConfiguration(*path)
@@ -18,6 +30,11 @@ func Process() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
+
+	Travis.Authenticate = config.BooleanFromSection("Travis", "Authenticate", false)
+	Travis.Token = config.StringFromSection("Travis", "Token", "")
 
 	projectList := config.StringsFromSection("Milou", "Projects")
 
