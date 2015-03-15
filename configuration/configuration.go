@@ -7,6 +7,10 @@ import (
 	"github.com/FogCreek/mini"
 )
 
+type iagoConfiguration struct {
+	Mode string
+}
+
 type webConfiguration struct {
 	Address string
 }
@@ -17,6 +21,7 @@ type travisConfiguration struct {
 }
 
 var (
+	Iago   iagoConfiguration
 	Web    webConfiguration
 	Travis travisConfiguration
 )
@@ -30,6 +35,8 @@ func Process() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	Iago.Mode = config.StringFromSection("Iago", "Mode", "server")
 
 	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
 
