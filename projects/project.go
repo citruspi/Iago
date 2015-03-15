@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"text/template"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/citruspi/milou/configuration"
@@ -66,6 +67,15 @@ func init() {
 	}
 }
 
+func (p Project) BasePath() string {
+	buffer := new(bytes.Buffer)
+
+	t, _ := template.New("basepath").Parse(p.Path)
+	t.Execute(buffer, p)
+
+	return string(buffer.Bytes())
+}
+
 func (p Project) ArchivePath() string {
 	var buffer bytes.Buffer
 
@@ -79,7 +89,7 @@ func (p Project) ArchivePath() string {
 func (p Project) TemporaryPath() string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(p.Path[:len(p.Path)-1])
+	buffer.WriteString(p.BasePath()[:len(p.BasePath())-1])
 	buffer.WriteString(".milou/")
 
 	return string(buffer.Bytes())
@@ -169,13 +179,13 @@ func (p Project) Download() {
 }
 
 func (p Project) Place() {
-	err := os.RemoveAll(p.Path)
+	err := os.RemoveAll(p.BasePath())
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.Rename(p.ExtractPath(), p.Path)
+	err = os.Rename(p.ExtractPath(), p.BasePath())
 
 	if err != nil {
 		log.Fatal(err)
