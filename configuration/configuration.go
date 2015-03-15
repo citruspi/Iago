@@ -18,6 +18,10 @@ type Configuration struct {
 		Authenticate bool   `json:"authenticate"`
 		Token        string `json:"token"`
 	} `json:"travis-ci"`
+	Redis struct {
+		Address string `json:"timeout"`
+		Timeout int    `json:"timeout"`
+	} `json:"redis"`
 	Projects []struct {
 		Owner      string `json:"owner"`
 		Repository string `json:"repository"`

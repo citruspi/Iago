@@ -5,6 +5,7 @@ import (
 	"time"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/citruspi/milou/configuration"
 	"github.com/fzzy/radix/redis"
 )
 
@@ -15,8 +16,14 @@ type Notification struct {
 	Branch     string `json:"branch"`
 }
 
+var (
+	conf configuration.Configuration
+)
+
 func init() {
 	log.SetLevel(log.DebugLevel)
+
+	conf = configuration.Load()
 }
 
 func (n Notification) Publish() {
@@ -27,9 +34,9 @@ func (n Notification) Publish() {
 	var marshalled []byte
 	var timeout time.Duration
 
-	timeout = time.Duration(10) * time.Second
+	timeout := time.Duration(conf.Redis.Timeout) * time.Second
 
-	conn, err = redis.DialTimeout("tcp", "127.0.0.1:6379", timeout)
+	conn, err := redis.DialTimeout("tcp", conf.Redis.Address, timeout)
 
 	if err != nil {
 		log.Fatal(err)

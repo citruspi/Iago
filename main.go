@@ -32,9 +32,9 @@ func main() {
 		http.HandleFunc("/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
 	} else if conf.Mode == "client" {
-		timeout := time.Duration(10) * time.Second
+		timeout := time.Duration(conf.Redis.Timeout) * time.Second
 
-		conn, err := redis.DialTimeout("tcp", "127.0.0.1:6379", timeout)
+		conn, err := redis.DialTimeout("tcp", conf.Redis.Address, timeout)
 
 		if err != nil {
 			log.Fatal(err)
