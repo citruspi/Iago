@@ -19,7 +19,10 @@ import (
 type Project struct {
 	Owner      string `json:"owner"`
 	Repository string `json:"repository"`
-	Version    string `json:"version"`
+	Version    struct {
+		Type  string `json:"type"`
+		Value string `json:"value"`
+	} `json:"version"`
 	Identifier string `json:"identifier"`
 	Path       string `json:"path"`
 }
@@ -65,7 +68,7 @@ func (p Project) ArchivePath() string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString(p.TemporaryPath())
-	buffer.WriteString(p.Version)
+	buffer.WriteString(p.Version.Value)
 	buffer.WriteString(".zip")
 
 	return string(buffer.Bytes())
@@ -95,7 +98,7 @@ func (p Project) ArchiveLocation() string {
 	buffer.WriteString("https://s3.amazonaws.com/")
 	buffer.WriteString(p.Identifier)
 	buffer.WriteString("/")
-	buffer.WriteString(p.Version)
+	buffer.WriteString(p.Version.Value)
 	buffer.WriteString(".zip")
 
 	return string(buffer.Bytes())
@@ -211,13 +214,24 @@ func DeployAll() {
 
 func Process(n notifications.Notification) {
 	for _, project := range list {
-		if project.Repository == n.Repository {
-			if project.Owner == n.Owner {
-				if project.Version == n.Commit {
-					project.Deploy()
-				} else if project.Version == n.Branch {
-					project.Deploy()
-				}
+		if project.Repository != n.Repository {
+			continue
+		}
+
+		if project.Owner != n.Owner {
+			continue
+		}
+
+		if project.Version.Type == "commit" {
+			if project.Version.Value == n.Commit {
+				project.Deploy()
+				continue
+			}
+		}
+
+		if project.Version.Type == "branch" {
+			if project.Version.Value == n.Branch {
+				project.Deploy()
 			}
 		}
 	}
