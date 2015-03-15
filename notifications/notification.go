@@ -2,11 +2,10 @@ package notifications
 
 import (
 	"encoding/json"
-	"time"
 
 	log "github.com/Sirupsen/logrus"
 	"github.com/citruspi/milou/configuration"
-	"github.com/fzzy/radix/redis"
+	"github.com/citruspi/milou/pubsub"
 )
 
 type Notification struct {
@@ -28,23 +27,9 @@ func init() {
 
 func (n Notification) Publish() {
 	var err error
-	var conn *redis.Client
 	var channel string
 	var message string
 	var marshalled []byte
-	var timeout time.Duration
-
-	timeout = time.Duration(conf.Redis.Timeout) * time.Second
-
-	conn, err = redis.DialTimeout("tcp", conf.Redis.Address, timeout)
-
-	if err != nil {
-		log.Fatal(err)
-	} else {
-		log.Info("Established connection to redis")
-	}
-
-	defer conn.Close()
 
 	marshalled, err = json.Marshal(n)
 
@@ -56,7 +41,15 @@ func (n Notification) Publish() {
 
 	channel = "milou." + n.Owner + "." + n.Repository
 
-	conn.Cmd("publish", channel, message)
+	err = pubsub.Publish(channel, message)
+
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed to publish notification")
+
+		return
+	}
 
 	log.WithFields(log.Fields{
 		"message": message,
