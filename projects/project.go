@@ -25,8 +25,8 @@ type Project struct {
 }
 
 var (
-	conf     configuration.Configuration
-	Projects []Project
+	conf configuration.Configuration
+	list []Project
 )
 
 func init() {
@@ -53,7 +53,7 @@ func init() {
 			log.Fatal(err)
 		}
 
-		Projects = append(Projects, project)
+		list = append(list, project)
 	}
 
 	if conf.Mode == "standalone" || conf.Mode == "client" {
@@ -204,13 +204,13 @@ func (p Project) Deploy() {
 }
 
 func DeployAll() {
-	for _, project := range Projects {
+	for _, project := range list {
 		project.Deploy()
 	}
 }
 
 func Process(n notifications.Notification) {
-	for _, project := range Projects {
+	for _, project := range list {
 		if project.Repository == n.Repository {
 			if project.Owner == n.Owner {
 				if project.Version == n.Commit {
