@@ -17,25 +17,12 @@ type Project struct {
 	Repository string
 	Version    string
 	Identifier string
-	Domain     string
-	Subdomain  string
+	Path       string
 }
 
 var (
 	List []Project
 )
-
-func (p Project) Path() string {
-	var buffer bytes.Buffer
-
-	buffer.WriteString("/srv/")
-	buffer.WriteString(p.Domain)
-	buffer.WriteString("/")
-	buffer.WriteString(p.Subdomain)
-	buffer.WriteString("/")
-
-	return string(buffer.Bytes())
-}
 
 func (p Project) ArchivePath() string {
 	var buffer bytes.Buffer
@@ -50,7 +37,7 @@ func (p Project) ArchivePath() string {
 func (p Project) TemporaryPath() string {
 	var buffer bytes.Buffer
 
-	buffer.WriteString(p.Path()[:len(p.Path())-1])
+	buffer.WriteString(p.Path[:len(p.Path)-1])
 	buffer.WriteString(".milou/")
 
 	return string(buffer.Bytes())
@@ -60,7 +47,7 @@ func (p Project) ExtractPath() string {
 	var buffer bytes.Buffer
 
 	buffer.WriteString(p.TemporaryPath())
-	buffer.WriteString(p.Subdomain)
+	buffer.WriteString(p.Repository)
 
 	return string(buffer.Bytes())
 }
@@ -140,13 +127,13 @@ func (p Project) Download() {
 }
 
 func (p Project) Place() {
-	err := os.RemoveAll(p.Path())
+	err := os.RemoveAll(p.Path)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	err = os.Rename(p.ExtractPath(), p.Path())
+	err = os.Rename(p.ExtractPath(), p.Path)
 
 	if err != nil {
 		log.Fatal(err)

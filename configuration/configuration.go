@@ -23,8 +23,7 @@ type Configuration struct {
 		Repository string `json:"repository"`
 		Version    string `json:"version"`
 		Identifier string `json:"identifier"`
-		Domain     string `json:"domain"`
-		Subdomain  string `json:"subdomain"`
+		Path       string `json:"path"`
 	} `json:"projects"`
 }
 
@@ -44,8 +43,7 @@ func init() {
 			Repository: project.Repository,
 			Version:    project.Version,
 			Identifier: project.Identifier,
-			Domain:     project.Domain,
-			Subdomain:  project.Subdomain,
+			Path:       project.Path,
 		})
 	}
 }
