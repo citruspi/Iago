@@ -2,8 +2,8 @@ package projects
 
 import (
 	"encoding/json"
-	"log"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/citruspi/milou/notifications"
 	"github.com/citruspi/milou/pubsub"
 )
@@ -26,7 +26,11 @@ func Subscribe() {
 	for {
 		reply := client.Receive()
 
-		if !reply.Timeout() {
+		if reply.Timeout() {
+			continue
+		} else if reply.Err != nil {
+			log.Error(err)
+		} else {
 			var notification notifications.Notification
 
 			err = json.Unmarshal([]byte(reply.Message), &notification)
@@ -36,8 +40,6 @@ func Subscribe() {
 			}
 
 			Process(notification)
-		} else {
-			continue
 		}
 	}
 }
