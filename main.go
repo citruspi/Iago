@@ -26,11 +26,14 @@ func main() {
 	if conf.Mode == "server" {
 		http.HandleFunc("/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
-	} else if conf.Mode == "client" {
+	} else if conf.Mode == "standalone" {
 		for _, project := range projects.List {
 			project.Deploy()
 		}
 
+		http.HandleFunc("/", handlers.Travis)
+		http.ListenAndServe(conf.Web.Address, nil)
+	} else if conf.Mode == "client" {
 		timeout := time.Duration(10) * time.Second
 
 		conn, err := redis.DialTimeout("tcp", "127.0.0.1:6379", timeout)

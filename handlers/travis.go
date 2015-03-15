@@ -4,11 +4,19 @@ import (
 	"net/http"
 
 	log "github.com/Sirupsen/logrus"
+	"github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/projects"
 	"github.com/citruspi/milou/webhooks/travis"
+)
+
+var (
+	conf configuration.Configuration
 )
 
 func init() {
 	log.SetLevel(log.DebugLevel)
+
+	conf = configuration.Load()
 }
 
 func Travis(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +56,12 @@ func Travis(w http.ResponseWriter, r *http.Request) {
 	}).Debug("Travis CI announcement is valid and authentic")
 
 	notification := announcement.ToNotification()
-	notification.Publish()
+
+	if conf.Mode == "server" {
+		notification.Publish()
+	} else if conf.Mode == "standalone" {
+		projects.Process(notification)
+	}
 
 	w.WriteHeader(http.StatusOK)
 }
