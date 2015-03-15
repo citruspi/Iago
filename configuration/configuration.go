@@ -33,9 +33,13 @@ type Configuration struct {
 var (
 	conf   Configuration
 	loaded bool
+	path *string
 )
 
 func init() {
+	path = flag.String("config", "/etc/milou.conf", "Configuration file path")
+	flag.Parse()
+
 	conf := Load()
 
 	for _, project := range conf.Projects {
@@ -57,9 +61,6 @@ func Load() Configuration {
 	}
 
 	var conf Configuration
-
-	path := flag.String("config", "/etc/milou.conf", "Configuration file path")
-	flag.Parse()
 
 	source, err := ioutil.ReadFile(*path)
 
