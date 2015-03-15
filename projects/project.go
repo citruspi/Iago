@@ -20,7 +20,6 @@ type Project struct {
 	Identifier string
 	Domain     string
 	Subdomain  string
-	Type       string
 }
 
 var (
@@ -30,13 +29,11 @@ var (
 func (p Project) Path() string {
 	var buffer bytes.Buffer
 
-	if p.Type == "static" {
-		buffer.WriteString("/srv/")
-		buffer.WriteString(p.Domain)
-		buffer.WriteString("/")
-		buffer.WriteString(p.Subdomain)
-		buffer.WriteString("/")
-	}
+	buffer.WriteString("/srv/")
+	buffer.WriteString(p.Domain)
+	buffer.WriteString("/")
+	buffer.WriteString(p.Subdomain)
+	buffer.WriteString("/")
 
 	return string(buffer.Bytes())
 }

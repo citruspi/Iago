@@ -26,7 +26,6 @@ type Configuration struct {
 		Identifier string `json:"identifier"`
 		Domain     string `json:"domain"`
 		Subdomain  string `json:"subdomain"`
-		Type       string `json:"type"`
 	} `json:"projects"`
 }
 
@@ -49,7 +48,6 @@ func init() {
 			Identifier: project.Identifier,
 			Domain:     project.Domain,
 			Subdomain:  project.Subdomain,
-			Type:       project.Type,
 		})
 	}
 }
