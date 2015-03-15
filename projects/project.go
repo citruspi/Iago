@@ -3,13 +3,17 @@ package projects
 import (
 	"archive/zip"
 	"bytes"
-	"github.com/citruspi/milou/notifications"
+	"encoding/json"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
+
+	"github.com/citruspi/milou/configuration"
+	"github.com/citruspi/milou/notifications"
 )
 
 type Project struct {
@@ -21,8 +25,37 @@ type Project struct {
 }
 
 var (
-	List []Project
+	conf     configuration.Configuration
+	projects []Project
 )
+
+func init() {
+	conf = configuration.Load()
+
+	files, err := ioutil.ReadDir(conf.Projects)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, file := range files {
+		var project Project
+
+		source, err := ioutil.ReadFile(conf.Projects + file.Name())
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		err = json.Unmarshal(source, &project)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		projects = append(projects, project)
+	}
+}
 
 func (p Project) ArchivePath() string {
 	var buffer bytes.Buffer
@@ -167,13 +200,13 @@ func (p Project) Deploy() {
 }
 
 func DeployAll() {
-	for _, project := range List {
+	for _, project := range projects {
 		project.Deploy()
 	}
 }
 
 func Process(n notifications.Notification) {
-	for _, project := range List {
+	for _, project := range projects {
 		if project.Repository == n.Repository {
 			if project.Owner == n.Owner {
 				if project.Version == n.Commit {
