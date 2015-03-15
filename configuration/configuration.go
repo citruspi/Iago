@@ -31,8 +31,6 @@ type Configuration struct {
 }
 
 var (
-	conf   Configuration
-	loaded bool
 	path *string
 )
 
@@ -57,10 +55,6 @@ func init() {
 }
 
 func Load() Configuration {
-	if loaded {
-		return conf
-	}
-
 	var conf Configuration
 
 	source, err := ioutil.ReadFile(*path)
@@ -74,8 +68,6 @@ func Load() Configuration {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	loaded = true
 
 	return conf
 }
