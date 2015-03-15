@@ -24,7 +24,7 @@ func init() {
 
 func main() {
 	if conf.Mode == "server" {
-		http.HandleFunc("/", handlers.TravisWebhook)
+		http.HandleFunc("/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
 	} else if conf.Mode == "client" {
 		for _, project := range projects.List {

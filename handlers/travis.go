@@ -11,7 +11,7 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
-func TravisWebhook(w http.ResponseWriter, r *http.Request) {
+func Travis(w http.ResponseWriter, r *http.Request) {
 	var announcement travis.Announcement
 
 	announcement = travis.ProcessRequest(r)
