@@ -34,9 +34,9 @@ func (n Notification) Publish() {
 	var marshalled []byte
 	var timeout time.Duration
 
-	timeout := time.Duration(conf.Redis.Timeout) * time.Second
+	timeout = time.Duration(conf.Redis.Timeout) * time.Second
 
-	conn, err := redis.DialTimeout("tcp", conf.Redis.Address, timeout)
+	conn, err = redis.DialTimeout("tcp", conf.Redis.Address, timeout)
 
 	if err != nil {
 		log.Fatal(err)
