@@ -12,7 +12,7 @@ clean:
 	rm -rf ./bin
 	rm -rf ./release
 
-milou:
+iago:
 
 	mkdir -p ./bin
 
