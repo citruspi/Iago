@@ -6,10 +6,10 @@ import (
 	"net/http"
 	"time"
 
+	conf "github.com/citruspi/iago/configuration"
 	"github.com/citruspi/iago/handlers"
 	"github.com/citruspi/iago/notifications"
-	conf "github.com/citruspi/milou/configuration"
-	"github.com/citruspi/milou/projects"
+	"github.com/citruspi/iago/projects"
 	"github.com/fzzy/radix/extra/pubsub"
 	"github.com/fzzy/radix/redis"
 )
