@@ -17,10 +17,10 @@ import (
 func main() {
 	conf.Process()
 
-	if conf.Milou.Mode == "server" {
+	if conf.Mode == "server" {
 		http.HandleFunc("/", handlers.TravisWebhook)
 		http.ListenAndServe(conf.Web.Address, nil)
-	} else if conf.Milou.Mode == "client" {
+	} else if conf.Mode == "client" {
 		for _, project := range projects.List {
 			project.Deploy()
 		}

@@ -9,10 +9,6 @@ import (
 	"github.com/citruspi/milou/projects"
 )
 
-type milouConfiguration struct {
-	Mode string
-}
-
 type webConfiguration struct {
 	Address string
 }
@@ -23,7 +19,7 @@ type travisConfiguration struct {
 }
 
 var (
-	Milou  milouConfiguration
+	Mode   string
 	Web    webConfiguration
 	Travis travisConfiguration
 )
@@ -38,7 +34,7 @@ func Process() {
 		log.Fatal(err)
 	}
 
-	Milou.Mode = config.StringFromSection("Milou", "Mode", "server")
+	Mode = config.String("mode", "server")
 
 	Web.Address = config.StringFromSection("Web", "Address", "127.0.01:8000")
 
