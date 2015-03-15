@@ -47,7 +47,7 @@ func (n Notification) Publish() {
 
 	message = string(marshalled)
 
-	channel = "iago." + n.Owner + "." + n.Repository
+	channel = "milou." + n.Owner + "." + n.Repository
 
 	conn.Cmd("publish", channel, message)
 
