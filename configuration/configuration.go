@@ -46,7 +46,8 @@ func init() {
 		projects.List = append(projects.List, projects.Project{
 			Name:       project.Name,
 			Owner:      project.Owner,
-			Repository: project.Version,
+			Repository: project.Repository,
+			Version:    project.Version,
 			Identifier: project.Identifier,
 			Domain:     project.Domain,
 			Subdomain:  project.Subdomain,
