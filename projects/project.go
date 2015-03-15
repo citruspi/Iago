@@ -17,11 +17,11 @@ import (
 )
 
 type Project struct {
-	Owner      string
-	Repository string
-	Version    string
-	Identifier string
-	Path       string
+	Owner      string `json:"owner"`
+	Repository string `json:"repository"`
+	Version    string `json:"version"`
+	Identifier string `json:"identifier"`
+	Path       string `json:"path"`
 }
 
 var (
