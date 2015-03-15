@@ -19,7 +19,6 @@ type Configuration struct {
 		Token        string `json:"token"`
 	} `json:"travis-ci"`
 	Projects []struct {
-		Name       string `json:"name"`
 		Owner      string `json:"owner"`
 		Repository string `json:"repository"`
 		Version    string `json:"version"`
@@ -41,7 +40,6 @@ func init() {
 
 	for _, project := range conf.Projects {
 		projects.List = append(projects.List, projects.Project{
-			Name:       project.Name,
 			Owner:      project.Owner,
 			Repository: project.Repository,
 			Version:    project.Version,

@@ -13,7 +13,6 @@ import (
 )
 
 type Project struct {
-	Name       string
 	Owner      string
 	Repository string
 	Version    string
