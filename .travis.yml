@@ -1,0 +1,23 @@
+language: go
+
+go:
+- 1.3
+
+install:
+- go get github.com/Sirupsen/logrus
+- go get github.com/fzzy/radix/redis
+
+script: true
+
+before_deploy: make release
+
+deploy:
+  provider: s3
+  access_key_id: AKIAJ5KDUZNWEMTUVSCA
+  secret_access_key:
+    secure: ckHqKu5qulRvGOGkrZRSR1Eyo3bD9m/GHXaHyO3ETLD9XTpestkSu58FQlZG77S5JkhNuEhMDsLlACiaows2SCoVKTO2ScFJM3W1/uRRQ3tWpk4piHSPhxLXnSc5dKcBs9E4S5nKCQB44GkARiJ/3SpryKlwS9DjZVO1qV6PYPA=
+  bucket: releases.milou
+  local-dir: release
+  acl: public_read
+  on:
+    repo: citruspi/milou
