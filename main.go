@@ -27,9 +27,7 @@ func main() {
 		http.HandleFunc("/webhooks/travis/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
 	} else if conf.Mode == "standalone" {
-		for _, project := range projects.List {
-			project.Deploy()
-		}
+		projects.DeployAll()
 
 		http.HandleFunc("/", handlers.Travis)
 		http.ListenAndServe(conf.Web.Address, nil)
@@ -46,9 +44,7 @@ func main() {
 
 		psc := pubsub.NewSubClient(conn)
 
-		for _, project := range projects.List {
-			_ = psc.Subscribe("milou." + project.Owner + "." + project.Repository)
-		}
+		projects.DeployAll()
 
 		for {
 			psr := psc.Receive()

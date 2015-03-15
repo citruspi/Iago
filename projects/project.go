@@ -166,6 +166,12 @@ func (p Project) Deploy() {
 	p.CleanUp()
 }
 
+func DeployAll() {
+	for _, project := range List {
+		project.Deploy()
+	}
+}
+
 func Process(n notifications.Notification) {
 	for _, project := range List {
 		if project.Repository == n.Repository {
