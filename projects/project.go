@@ -6,12 +6,12 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/citruspi/milou/configuration"
 	"github.com/citruspi/milou/notifications"
 )

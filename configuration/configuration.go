@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"io/ioutil"
-	"log"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 type Configuration struct {
