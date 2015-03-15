@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	log "github.com/Sirupsen/logrus"
@@ -22,6 +23,7 @@ type Project struct {
 	Version    struct {
 		Type  string `json:"type"`
 		Value string `json:"value"`
+		Regex bool   `json:"regex"`
 	} `json:"version"`
 	Identifier string `json:"identifier"`
 	Path       string `json:"path"`
@@ -230,7 +232,13 @@ func Process(n notifications.Notification) {
 		}
 
 		if project.Version.Type == "branch" {
-			if project.Version.Value == n.Branch {
+			if project.Version.Regex {
+				match, _ := regexp.MatchString(project.Version.Value, n.Branch)
+
+				if match {
+					project.Deploy()
+				}
+			} else if project.Version.Value == n.Branch {
 				project.Deploy()
 			}
 		}
