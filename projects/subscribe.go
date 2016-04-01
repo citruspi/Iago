@@ -29,7 +29,7 @@ func Subscribe() {
 		if reply.Timeout() {
 			continue
 		} else if reply.Err != nil {
-			log.Error(err)
+			log.Error(reply.Err)
 		} else {
 			var notification notifications.Notification
 
