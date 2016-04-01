@@ -36,16 +36,18 @@ func Travis(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !announcement.Authentic {
-		log.WithFields(log.Fields{
-			"owner":      announcement.Payload.Repository.Owner,
-			"repository": announcement.Payload.Repository.Name,
-			"branch":     announcement.Payload.Branch,
-			"commit":     announcement.Payload.Commit,
-		}).Error("Travis CI announcement is invalid")
+	if conf.TravisCI.Authenticate {
+		if !announcement.Authentic {
+			log.WithFields(log.Fields{
+				"owner":      announcement.Payload.Repository.Owner,
+				"repository": announcement.Payload.Repository.Name,
+				"branch":     announcement.Payload.Branch,
+				"commit":     announcement.Payload.Commit,
+			}).Error("Travis CI announcement is invalid")
 
-		w.WriteHeader(http.StatusUnauthorized)
-		return
+			w.WriteHeader(http.StatusUnauthorized)
+			return
+		}
 	}
 
 	log.WithFields(log.Fields{
