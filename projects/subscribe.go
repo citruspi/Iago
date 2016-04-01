@@ -19,6 +19,8 @@ func Subscribe() {
 
 	client, err := pubsub.Subscribe(channels)
 
+	defer client.Client.Conn.Close()
+
 	if err != nil {
 		log.Fatal(err)
 	}

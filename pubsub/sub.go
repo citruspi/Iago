@@ -24,8 +24,6 @@ func Subscribe(channels []string) (*pubsub.SubClient, error) {
 		log.Info("Established connection to redis")
 	}
 
-	defer conn.Close()
-
 	client = pubsub.NewSubClient(conn)
 
 	for _, channel := range channels {
