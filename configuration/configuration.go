@@ -18,7 +18,7 @@ type Configuration struct {
 		Token        string `json:"token"`
 	} `json:"travis-ci"`
 	Redis struct {
-		Address string `json:"timeout"`
+		Address string `json:"address"`
 		Timeout int    `json:"timeout"`
 	} `json:"redis"`
 	Projects string
