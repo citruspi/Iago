@@ -117,6 +117,12 @@ func (p Project) ArchiveLocation() string {
 }
 
 func (p Project) Extract() error {
+	err := os.MkdirAll(p.ExtractPath(), 0700)
+
+	if err != nil {
+		return err
+	}
+
 	r, err := zip.OpenReader(p.ArchivePath())
 	if err != nil {
 		return err
