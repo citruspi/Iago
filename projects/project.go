@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"text/template"
 
@@ -28,6 +29,7 @@ type Project struct {
 	} `json:"version"`
 	Identifier string `json:"identifier"`
 	Path       string `json:"path"`
+	Mode       string `json:"file_mode"`
 }
 
 var (
@@ -116,8 +118,26 @@ func (p Project) ArchiveLocation() string {
 	return string(buffer.Bytes())
 }
 
+func (p Project) FileMode() os.FileMode {
+	file_mode := os.FileMode(0700)
+
+	log.Info(p.Mode)
+
+	if p.Mode != "" {
+		file_mode_int, err := strconv.ParseInt(p.Mode, 8, 32)
+
+		if err == nil {
+			file_mode = os.FileMode(file_mode_int)
+		}
+	}
+
+	return file_mode
+}
+
 func (p Project) Extract() error {
-	err := os.MkdirAll(p.ExtractPath(), 0700)
+	var err error
+
+	err = os.MkdirAll(p.ExtractPath(), p.FileMode())
 
 	if err != nil {
 		return err
@@ -138,20 +158,20 @@ func (p Project) Extract() error {
 
 		fpath := filepath.Join(p.ExtractPath(), f.Name)
 		if f.FileInfo().IsDir() {
-			os.MkdirAll(fpath, f.Mode())
+			os.MkdirAll(fpath, p.FileMode())
 		} else {
 			var fdir string
 			if lastIndex := strings.LastIndex(fpath, string(os.PathSeparator)); lastIndex > -1 {
 				fdir = fpath[:lastIndex]
 			}
 
-			err = os.MkdirAll(fdir, f.Mode())
+			err = os.MkdirAll(fdir, p.FileMode())
 			if err != nil {
 				log.Fatal(err)
 				return err
 			}
 			f, err := os.OpenFile(
-				fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, f.Mode())
+				fpath, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, p.FileMode())
 			if err != nil {
 				return err
 			}
